@@ -1,0 +1,15 @@
+<template>
+    <lightning-card>
+        <h2 slot="title" class="slds-truncate">
+            <lightning-icon icon-name="utility:ai_app" class="slds-m-right_x-small header-icon-style"></lightning-icon>
+            ISV Agent
+        </h2>
+        <div class="slds-card__body slds-card__body_inner slds-scrollable" style="max-height:500px">
+            <c-org-limits
+                value={value}
+                onlimits={updateLimits}
+                hide-search="true"
+            ></c-org-limits>
+        </div>
+    </lightning-card>
+</template>

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GenAiPromptTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <activeVersionIdentifier>/x/cQ0tDr6f5AD75j+9520LBwOtiual/FJhY7zpVmUI=_1</activeVersionIdentifier>
+    <description>The prompt template takes a user generated scratch org definition file and enhances with AI rewrite on potential features and settings that could have been missed</description>
+    <developerName>ISV_Agent_Generate_Scratch_Org_Definition_File</developerName>
+    <masterLabel>ISV Agent Generate Scratch Org Definition File</masterLabel>
+    <templateVersions>
+        <content>You are an expert Salesforce ISV Agent. Your task is to analyze and enhance the following user-generated Scratch Org definition file: {!$Input:User_Generated_Scratch_Org_File}
+
+Enhance this file by adding relevant and useful features, settings, and metadata configurations, making the org more robust for ISV development use cases.
+Guidelines:
+For features and settings, strictly reference and adhere to the values listed in the official Salesforce documentation:
+1. Features settings: https://developer.salesforce.com/docs/atlas.en-us.sfdx_dev.meta/sfdx_dev/sfdx_dev_scratch_orgs_def_file_config_values.htm
+2. Metadata settings: https://developer.salesforce.com/docs/atlas.en-us.api_meta.meta/api_meta/meta_settings.htm
+
+Do not invent or include any features or settings that are not explicitly documented in the above links.
+Return only the enhanced scratch org definition as a properly formatted JSON object, using two spaces for indentation. Remove ```json tags from the response 
+</content>
+        <inputs>
+            <apiName>User_Generated_Scratch_Org_File</apiName>
+            <definition>primitive://String</definition>
+            <masterLabel>User Generated Scratch Org File</masterLabel>
+            <referenceName>Input:User_Generated_Scratch_Org_File</referenceName>
+            <required>true</required>
+        </inputs>
+        <primaryModel>sfdc_ai__DefaultGPT41</primaryModel>
+        <status>Published</status>
+        <versionIdentifier>/x/cQ0tDr6f5AD75j+9520LBwOtiual/FJhY7zpVmUI=_1</versionIdentifier>
+    </templateVersions>
+    <type>einstein_gpt__flex</type>
+    <visibility>Global</visibility>
+</GenAiPromptTemplate>

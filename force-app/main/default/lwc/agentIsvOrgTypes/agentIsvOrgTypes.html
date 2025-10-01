@@ -1,0 +1,46 @@
+<template>
+   <lightning-card>
+        <h2 slot="title" class="slds-truncate">
+            <lightning-icon icon-name="utility:ai_app" class="slds-m-right_x-small header-icon-style"></lightning-icon>
+            ISV Agent
+        </h2>
+        <lightning-button-group slot="actions">
+            <lightning-button-icon-stateful
+                icon-name="utility:summary"
+                onclick={handleListView}
+                selected={listState}
+                tooltip="List View"
+            ></lightning-button-icon-stateful>
+            <lightning-button-icon-stateful
+                icon-name="utility:table"
+                onclick={handleTableView}
+                selected={tableState}
+                tooltip="Table View"
+            ></lightning-button-icon-stateful>
+        </lightning-button-group>
+        <div class="slds-card__body slds-card__body_inner slds-p-bottom_x-small">
+            <template lwc:if={listState}>
+                <template for:each={value} for:item="org">
+                    <div key={org.name} class="slds-border_top slds-border_bottom slds-border_right slds-border_left slds-m-bottom_x-small">
+                        <lightning-card variant="narrow" title={org.name} icon-name={org.icon} class="header-icon-style">
+                            <p class="slds-p-horizontal_small">{org.description}</p>
+                            <div slot="footer">
+                                <lightning-badge label={org.purpose} class="slds-badge_inverse"></lightning-badge>
+                                <lightning-button variant="brand" label="Create" onclick={handleCreateOrgModal} class="slds-m-left_x-small" data-id={org.name}></lightning-button>
+                            </div>
+                        </lightning-card>
+                    </div>
+                </template>
+            </template>
+            <template lwc:elseif={tableState}>
+                <lightning-datatable
+                    key-field="name"
+                    data={value}
+                    columns={columns}
+                    onrowaction={handleRowAction}
+                    hide-checkbox-column
+                ></lightning-datatable>
+            </template>
+        </div>
+   </lightning-card> 
+</template>

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GenAiPromptTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <activeVersionIdentifier>/x/cQ0tDr6f5AD75j+9520LBwOtiual/FJhY7zpVmUI=_1</activeVersionIdentifier>
+    <description>Creates a rich-text summary of the org&apos;s limits. This prompt template is used by a custom LWC that displays the details on the record</description>
+    <developerName>ISV_Agent_Org_Limits_Summary</developerName>
+    <masterLabel>ISV Agent Org Limits Summary</masterLabel>
+    <templateVersions>
+        <content>You are the Salesforce Admin for the current org. Your goal is to summarize the organization’s limits.
+
+The limits data is provided in the variable {!$Input:Limits_Data}, which contains JSON-formatted information. Each entry includes:
+- A limit name
+- A Max (maximum allowed) value
+- A Remaining (remaining available) value
+
+Your task:
+- Analyze {!$Input:Limits_Data}.
+- Identify the 5 limits that are closest to reaching their maximum (lowest remaining compared to max).
+- Provide a clear, concise summary of these limits.
+- For any limits that are close to being exhausted, include a list of practical ways the user can stay within that limit.
+- Do not reference or display the raw JSON data in your output.
+- Do not include thank-you&apos;s, acknowledgements, or follow-up prompts. This should be a single, focused response.
+
+HTML Generation Guidelines:
+- Use &lt;p&gt; for paragraphs.
+- Use &lt;a&gt; for links.
+- Use &lt;strong&gt; for bold content.
+- Do not use any heading tags.
+- Insert a line break after each paragraph to keep the output neat and readable.
+- Use &lt;ul&gt; for lists 
+
+
+
+
+</content>
+        <inputs>
+            <apiName>Limits_Data</apiName>
+            <definition>primitive://String</definition>
+            <masterLabel>Limits Data</masterLabel>
+            <referenceName>Input:Limits_Data</referenceName>
+            <required>true</required>
+        </inputs>
+        <primaryModel>sfdc_ai__DefaultGPT5Mini</primaryModel>
+        <responseFormat>HTML</responseFormat>
+        <status>Published</status>
+        <versionIdentifier>/x/cQ0tDr6f5AD75j+9520LBwOtiual/FJhY7zpVmUI=_1</versionIdentifier>
+    </templateVersions>
+    <type>einstein_gpt__flex</type>
+    <visibility>Global</visibility>
+</GenAiPromptTemplate>

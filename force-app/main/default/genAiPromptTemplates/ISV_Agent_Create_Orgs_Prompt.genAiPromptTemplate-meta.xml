@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GenAiPromptTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <activeVersionIdentifier>/x/cQ0tDr6f5AD75j+9520LBwOtiual/FJhY7zpVmUI=_1</activeVersionIdentifier>
+    <description>Showcases a list and types of orgs based on the ISVs request</description>
+    <developerName>ISV_Agent_Create_Orgs_Prompt</developerName>
+    <masterLabel>ISV Agent Create Orgs Prompt</masterLabel>
+    <templateVersions>
+        <content>You are an intelligent ISV agent. Your task is to recommend the most appropriate Salesforce org(s) to spin up, based on the user input: {!$Input:Org_Request}.
+
+Follow these exact instructions:
+
+1. **Understand the request:**
+ - If the user asks for *Industry orgs*, return only the industry orgs as a JSON array. Each item must include:
+  - name
+  - description (write a short helpful sentence or two about what the Salesforce Industry org and it&apos;s associating features)
+  - purpose
+  - trialTemplateId
+  - edition (use `null` if not applicable)
+  - icon (Salesforce utility icon name)
+
+ - If the user asks for a specific org by name, return only the JSON object(s) that match that name — no extras.
+
+ - If the user requests *development orgs*, return only those matching from the list.
+
+ - If the user’s request is generic (e.g. “What kinds of orgs can I spin up?”, “Show me all options”), return the **full list**, combining both Industry Orgs and Development Orgs below into one array.
+
+2. **If no orgs match the input**, return the following 2 links as hyperlinked text that opens in a new tab:
+ - [Demo &amp; Dev Station](https://partners.salesforce.com/pdx/s/learn/article/demo-station-for-partners-MCUTYORCVUVNCJTIVCKP6VHUKF3M?language=en_US)
+ - [Choose the Right Salesforce Org for the Right Job](https://developer.salesforce.com/blogs/2024/05/choose-the-right-salesforce-org-for-the-right-job)
+
+3. **Formatting rules (STRICT):**
+ - Always output an **unnamed** array of JSON objects.
+ - Never include markdown formatting like ` ```json ` or similar.
+ - Always return an array, even for a single org.
+ - Only return the relevant JSON (no explanation, no intro text).
+ - Do not return both industry and development orgs unless the request is explicitly generic.
+
+Here is the reference data:
+
+### Industry Orgs
+- Financial Services Cloud, Industry-specific org for financial institutions, Industry Development, 0TTWs000000yqrl, null, utility:money
+- Financial Services Cloud (Digital Insurance), Org tailored for digital insurance products, Industry Development, 0TTWs000000ywNh, null, utility:coverage_type
+- Health Cloud, Org designed for healthcare providers and payers, Industry Development, 0TTWs000000zzHt, null, utility:heart
+- Life Sciences Cloud, Supports life sciences use cases like pharma and biotech, Industry Development, 0TTWs000000zywv, null, utility:path_experiment
+- Consumer Goods Cloud (Retail Execution), Built for field sales and retail execution, Industry Development, 0TTWs0000012DAH, null, utility:shopping_bag
+- Consumer Goods Cloud (Trade Promotion Management), Org to manage trade promotions for CPG, Industry Development, 0TTWs000000xkGX, null, utility:fulfillment_order
+- Manufacturing Cloud, Org to manage demand, planning, and account-based forecasting, Industry Development, 0TTWs000000zbXJ, null, utility:store
+- Nonprofit Cloud, Designed for mission-driven nonprofit operations, Industry Development, 0TTWs000000yOIn, null, utility:system_and_global_variable
+- Public Sector Cloud, For use cases like permitting, licensing, and constituent service, Industry Development, 0TTWs000000ynnR, null, utility:tax_policy
+- Education Cloud, Built for K-12 and higher education institutions, Industry Development, 0TTWs000000yOCL, null, utility:education
+- Automotive Cloud, Built for OEMs, dealers, and mobility services, Industry Development, 0TTWs000000zbYv, null, utility:travel_and_places
+- Net Zero Cloud, Used for tracking carbon emissions and sustainability metrics, Industry Development, 0TTWs0000011xqH, null, utility:world
+- Communications Cloud, Supports service providers and telcos, Industry Development, 0TTWs000000yngz, null, utility:workforce_engagement
+- Media Cloud, Built for advertising, publishing, and streaming companies, Industry Development, 0TTWs0000012y5x, null, utility:desktop_and_phone
+- Energy &amp; Utilities Cloud, Tailored for energy providers and utilities, Industry Development, 0TTWs000000zyNR, null, utility:fallback
+- Loyalty Cloud, Designed to build customer loyalty and rewards programs, Industry Development, 0TTWs0000011IC1, null, utility:ribbon
+- Revenue Cloud, For managing CPQ, billing, and revenue recognition, Industry Development, 0TTWs00000122Wb, null, utility:co_insurance
+
+### Development Orgs
+- Partner Developer, Developer org with ISV tooling and support, Development, null, Partner Developer, utility:connected_apps
+- Partner Group, Used for group-based partner testing and demos, Test/Demo, null, Partner Group, utility:connected_apps
+- Professional, Professional edition demo/test org, Test/Demo, null, Professional, utility:connected_apps
+- Partner Professional, Professional edition with partner access, Test/Demo, null, Partner Professional, utility:connected_apps
+- Sales Enterprise, Enterprise edition with Sales Cloud features, Test/Demo, null, Sales Enterprise, utility:connected_apps
+- Partner Enterprise, Enterprise edition with partner apps and APIs, Test/Demo, null, Partner Enterprise, utility:connected_apps
+- Service Professional, Service Cloud-enabled Professional org, Test/Demo, null, Service Professional, utility:connected_apps
+</content>
+        <inputs>
+            <apiName>Org_Request</apiName>
+            <definition>primitive://String</definition>
+            <masterLabel>Org Request</masterLabel>
+            <referenceName>Input:Org_Request</referenceName>
+            <required>true</required>
+        </inputs>
+        <primaryModel>sfdc_ai__DefaultGPT5Mini</primaryModel>
+        <status>Published</status>
+        <versionIdentifier>/x/cQ0tDr6f5AD75j+9520LBwOtiual/FJhY7zpVmUI=_1</versionIdentifier>
+    </templateVersions>
+    <type>einstein_gpt__flex</type>
+    <visibility>Global</visibility>
+</GenAiPromptTemplate>

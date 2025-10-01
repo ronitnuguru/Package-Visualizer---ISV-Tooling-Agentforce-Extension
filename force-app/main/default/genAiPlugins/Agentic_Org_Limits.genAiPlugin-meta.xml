@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GenAiPlugin xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <aiPluginUtterances>
+        <developerName>utterance_0_1758567048416</developerName>
+        <language xsi:nil="true"/>
+        <masterLabel>utterance_0_1758567048416</masterLabel>
+        <utterance>Display my org&apos;s limits</utterance>
+    </aiPluginUtterances>
+    <aiPluginUtterances>
+        <developerName>utterance_0_1758644560370</developerName>
+        <language>en_US</language>
+        <masterLabel>utterance_0_1758644560370</masterLabel>
+        <utterance>Show me the list of limits against my current org</utterance>
+    </aiPluginUtterances>
+    <canEscalate>false</canEscalate>
+    <description>Helps user generate the current Salesforce org&apos;s limits</description>
+    <developerName>Agentic_Org_Limits</developerName>
+    <genAiFunctions>
+        <functionName>Get_Org_Limits_via_ISV_Agent</functionName>
+    </genAiFunctions>
+    <genAiPluginInstructions>
+        <description>Ensure to run the Get Org Limits via ISV Agent Action when the user asks any questions about the org&apos;s limits</description>
+        <developerName>instruction_0_1758567048414</developerName>
+        <language xsi:nil="true"/>
+        <masterLabel>instruction_0_1758567048414</masterLabel>
+    </genAiPluginInstructions>
+    <language>en_US</language>
+    <masterLabel>Agentic Org Limits</masterLabel>
+    <pluginType>Topic</pluginType>
+    <scope>Your job is to only display the current Salesforce org’s limits and answer any questions specifically related to those limits.</scope>
+</GenAiPlugin>

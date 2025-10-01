@@ -1,0 +1,38 @@
+{
+  "packageDirectories": [
+    {
+      "versionName": "ver 0.1",
+      "versionNumber": "0.1.0.NEXT",
+      "calculateTransitiveDependencies": true,
+      "path": "force-app",
+      "default": true,
+      "package": "Package Visualizer + ISV Tooling Agentforce Extension",
+      "packageMetadataAccess": {
+        "permissionSets": [
+          "EinsteinGPTPromptTemplateManager"
+        ]
+      },
+      "dependencies": [
+        {
+          "package": "04tRh000001LnJhIAK"
+        }
+      ]
+    }
+  ],
+  "name": "Package Visualizer + ISV Tooling Agentforce Extension",
+  "namespace": "pkgviz",
+  "sfdcLoginUrl": "https://login.salesforce.com",
+  "sourceApiVersion": "64.0",
+  "packageAliases": {
+    "Package Visualizer + ISV Tooling Agentforce Extension": "0HoRh0000000673KAA",
+    "Package Visualizer + ISV Tooling Agentforce Extension@0.1.0-1": "04tRh000001LoIzIAK",
+    "Package Visualizer + ISV Tooling Agentforce Extension@0.1.0-2": "04tRh000001MZD3IAO",
+    "Package Visualizer + ISV Tooling Agentforce Extension@0.1.0-3": "04tRh000001MaAjIAK",
+    "Package Visualizer + ISV Tooling Agentforce Extension@0.1.0-4": "04tRh000001MaInIAK",
+    "Package Visualizer + ISV Tooling Agentforce Extension@0.1.0-5": "04tRh000001Mdi5IAC",
+    "Package Visualizer + ISV Tooling Agentforce Extension@0.1.0-6": "04tRh000001MeflIAC",
+    "Package Visualizer + ISV Tooling Agentforce Extension@0.1.0-7": "04tRh000001MekbIAC",
+    "Package Visualizer + ISV Tooling Agentforce Extension@0.1.0-8": "04tRh000001MemDIAS",
+    "Package Visualizer + ISV Tooling Agentforce Extension@0.1.0-9": "04tRh000001MenpIAC"
+  }
+}

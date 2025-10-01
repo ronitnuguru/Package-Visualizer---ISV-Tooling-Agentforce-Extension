@@ -1,0 +1,19 @@
+{
+  "unevaluatedProperties" : false,
+  "properties" : {
+    "orgs" : {
+      "title" : "Org Response",
+      "description" : "List of orgs available for ISVs to spin up",
+      "maxItems" : 2000,
+      "items" : {
+        "lightning:type" : "c__createOrgsResponse"
+      },
+      "lightning:type" : "lightning__listType",
+      "lightning:isPII" : false,
+      "copilotAction:isDisplayable" : true,
+      "copilotAction:isUsedByPlanner" : true,
+      "copilotAction:useHydratedPrompt" : false
+    }
+  },
+  "lightning:type" : "lightning__objectType"
+}

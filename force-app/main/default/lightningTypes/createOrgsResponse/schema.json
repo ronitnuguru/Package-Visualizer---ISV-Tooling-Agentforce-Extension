@@ -1,0 +1,5 @@
+{
+  "title" : "Create Orgs",
+  "description" : "Create Orgs",
+  "lightning:type" : "@apexClassType/c__AgentCreateOrgs$OrgAgent"
+}

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GenAiPlugin xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <aiPluginUtterances>
+        <developerName>utterance_0_1758568257995</developerName>
+        <language>en_US</language>
+        <masterLabel>utterance_0_1758568257995</masterLabel>
+        <utterance>Showcase the list of orgs I can spin up?</utterance>
+    </aiPluginUtterances>
+    <aiPluginUtterances>
+        <developerName>utterance_0_1758568577069</developerName>
+        <language>en_US</language>
+        <masterLabel>utterance_0_1758568577069</masterLabel>
+        <utterance>What kind of orgs can I spin up?</utterance>
+    </aiPluginUtterances>
+    <aiPluginUtterances>
+        <developerName>utterance_0_1758644504501</developerName>
+        <language>en_US</language>
+        <masterLabel>utterance_0_1758644504501</masterLabel>
+        <utterance>Show me all the orgs I can create?</utterance>
+    </aiPluginUtterances>
+    <aiPluginUtterances>
+        <developerName>utterance_1_1758644504510</developerName>
+        <language>en_US</language>
+        <masterLabel>utterance_1_1758644504510</masterLabel>
+        <utterance>What are different types of Industry orgs I can create?</utterance>
+    </aiPluginUtterances>
+    <aiPluginUtterances>
+        <developerName>utterance_2_1758644504510</developerName>
+        <language>en_US</language>
+        <masterLabel>utterance_2_1758644504510</masterLabel>
+        <utterance>What are the various development orgs I can create?</utterance>
+    </aiPluginUtterances>
+    <canEscalate>false</canEscalate>
+    <description>Helps user generate the list of of development, industry, test and demo orgs they have available to create and spin up</description>
+    <developerName>Agentic_Create_Orgs</developerName>
+    <genAiFunctions>
+        <functionName>Create_Orgs_via_ISV_Agent</functionName>
+    </genAiFunctions>
+    <genAiPluginInstructions>
+        <description>Ensure to run the Create Orgs via ISV Agent Action when displaying any contents and response for creating orgs</description>
+        <developerName>instruction_0_1758566814747</developerName>
+        <language xsi:nil="true"/>
+        <masterLabel>instruction_0_1758566814747</masterLabel>
+    </genAiPluginInstructions>
+    <language>en_US</language>
+    <masterLabel>Agentic Create Orgs</masterLabel>
+    <pluginType>Topic</pluginType>
+    <scope>Your job is to only help with showcasing and creating orgs for ISV&apos;s development and testing</scope>
+</GenAiPlugin>

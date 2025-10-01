@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GenAiFunction xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>Display a custom list of orgs available for ISVs to spin up</description>
+    <invocationTarget>pkgviz__AgentCreateOrgs</invocationTarget>
+    <invocationTargetType>apex</invocationTargetType>
+    <isConfirmationRequired>false</isConfirmationRequired>
+    <isIncludeInProgressIndicator>true</isIncludeInProgressIndicator>
+    <masterLabel>Create Orgs via ISV Agent1</masterLabel>
+    <progressIndicatorMessage>Unmanaged ISV Agent...</progressIndicatorMessage>
+</GenAiFunction>

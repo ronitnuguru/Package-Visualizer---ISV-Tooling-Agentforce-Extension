@@ -1,0 +1,5 @@
+{
+    "title" : "Limits Response",
+    "description" : "Response object containing organization limits information",
+    "lightning:type" : "@apexClassType/c__AgentLimitsController$AgentOrgLimit"
+  }

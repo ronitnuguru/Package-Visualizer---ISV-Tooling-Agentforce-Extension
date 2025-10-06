@@ -1,8 +1,8 @@
 {
   "packageDirectories": [
     {
-      "versionName": "ver 0.1",
-      "versionNumber": "0.1.0.NEXT",
+      "versionName": "ver 0.2",
+      "versionNumber": "0.2.0.NEXT",
       "calculateTransitiveDependencies": true,
       "path": "force-app",
       "default": true,
@@ -33,6 +33,13 @@
     "Package Visualizer + ISV Tooling Agentforce Extension@0.1.0-6": "04tRh000001MeflIAC",
     "Package Visualizer + ISV Tooling Agentforce Extension@0.1.0-7": "04tRh000001MekbIAC",
     "Package Visualizer + ISV Tooling Agentforce Extension@0.1.0-8": "04tRh000001MemDIAS",
-    "Package Visualizer + ISV Tooling Agentforce Extension@0.1.0-9": "04tRh000001MenpIAC"
+    "Package Visualizer + ISV Tooling Agentforce Extension@0.1.0-9": "04tRh000001MenpIAC",
+    "Package Visualizer + ISV Tooling Agentforce Extension@0.1.0-10": "04tRh000001Mn37IAC",
+    "Package Visualizer + ISV Tooling Agentforce Extension@0.1.0-11": "04tRh000001MnKrIAK",
+    "Package Visualizer + ISV Tooling Agentforce Extension@0.1.0-12": "04tRh000001MoFJIA0",
+    "Package Visualizer + ISV Tooling Agentforce Extension@0.1.0-14": "04tRh000001MpbBIAS",
+    "Package Visualizer + ISV Tooling Agentforce Extension@0.1.0-16": "04tRh000001MpePIAS",
+    "Package Visualizer + ISV Tooling Agentforce Extension@0.1.0-17": "04tRh000001MphdIAC",
+    "Package Visualizer + ISV Tooling Agentforce Extension@0.2.0-1": "04tRh000001NBdJIAW"
   }
 }

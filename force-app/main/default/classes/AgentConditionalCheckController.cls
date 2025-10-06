@@ -183,4 +183,174 @@ public with sharing class AgentConditionalCheckController {
     public static boolean isPaymentLineInvoice() {
       return (Type.forName('PaymentLineInvoice') != null);
     }
+
+    @AuraEnabled(cacheable=true)
+    public static boolean isApiAnomalyEventStore() {
+      return (Type.forName('ApiAnomalyEventStore') != null);
+    }
+
+    @AuraEnabled(cacheable=true)
+    public static boolean isAuthorizationForm() {
+      return (Type.forName('AuthorizationForm') != null);
+    }
+
+    @AuraEnabled(cacheable=true)
+    public static boolean isCreditMemo() {
+      return (Type.forName('CreditMemo') != null);
+    }
+
+    @AuraEnabled(cacheable=true)
+    public static boolean isCreditMemoInvApplication() {
+      return (Type.forName('CreditMemoInvApplication') != null);
+    }
+
+    @AuraEnabled(cacheable=true)
+    public static boolean isCreditMemoLine() {
+      return (Type.forName('CreditMemoLine') != null);
+    }
+
+    @AuraEnabled(cacheable=true)
+    public static boolean isWorkStepTemplate() {
+      return (Type.forName('WorkStepTemplate') != null);
+    }
+
+    @AuraEnabled(cacheable=true)
+    public static boolean isWorkPlanTemplateEntry() {
+      return (Type.forName('WorkPlanTemplateEntry') != null);
+    }
+
+    @AuraEnabled(cacheable=true)
+    public static boolean isWorkPlanTemplate() {
+      return (Type.forName('WorkPlanTemplate') != null);
+    }
+
+    @AuraEnabled(cacheable=true)
+    public static boolean isWorkPlan() {
+      return (Type.forName('WorkPlan') != null);
+    }
+
+    @AuraEnabled(cacheable=true)
+    public static boolean isSessionHijackingEventStore() {
+      return (Type.forName('SessionHijackingEventStore') != null);
+    }
+
+    @AuraEnabled(cacheable=true)
+    public static boolean isRefundLinePayment() {
+      return (Type.forName('RefundLinePayment') != null);
+    }
+
+    @AuraEnabled(cacheable=true)
+    public static boolean isMessagingEndUser() {
+      return (Type.forName('MessagingEndUser') != null);
+    }
+
+    @AuraEnabled(cacheable=true)
+    public static boolean isMessagingSession() {
+      return (Type.forName('MessagingSession') != null);
+    }
+
+    @AuraEnabled(cacheable=true)
+    public static boolean isFlowOrchestrationInstance() {
+      return (Type.forName('FlowOrchestrationInstance') != null);
+    }
+
+    @AuraEnabled(cacheable=true)
+    public static boolean isFlowOrchestrationLog() {
+      return (Type.forName('FlowOrchestrationLog') != null);
+    }
+
+    @AuraEnabled(cacheable=true)
+    public static boolean isFlowOrchestrationStageInstance() {
+      return (Type.forName('FlowOrchestrationStageInstance') != null);
+    }
+
+    @AuraEnabled(cacheable=true)
+    public static boolean isFlowOrchestrationStepInstance() {
+      return (Type.forName('FlowOrchestrationStepInstance') != null);
+    }
+
+    @AuraEnabled(cacheable=true)
+    public static boolean isFlowOrchestrationWorkItem() {
+      return (Type.forName('FlowOrchestrationWorkItem') != null);
+    }
+
+    @AuraEnabled(cacheable=true)
+    public static boolean isUserProvisioningRequest() {
+      return (Type.forName('UserProvisioningRequest') != null);
+    }
+
+    @AuraEnabled(cacheable=true)
+    public static boolean isSocialPersona() {
+      return (Type.forName('SocialPersona') != null);
+    }
+
+    @AuraEnabled(cacheable=true)
+    public static boolean isSvcCatalogRequest() {
+      return (Type.forName('SvcCatalogRequest') != null);
+    }
+
+    @AuraEnabled(cacheable=true)
+    public static boolean isSvcCatalogReqRelatedItem() {
+      return (Type.forName('SvcCatalogReqRelatedItem') != null);
+    }
+
+    @AuraEnabled(cacheable=true)
+    public static boolean isDevopsRequestInfo() {
+      return (Type.forName('DevopsRequestInfo') != null);
+    }
+
+    @AuraEnabled(cacheable=true)
+    public static boolean isPrivacyRTBFRequest() {
+      return (Type.forName('PrivacyRTBFRequest') != null);
+    }
+
+    @AuraEnabled(cacheable=true)
+    public static boolean isGuestUserAnomalyEventStore() {
+      return (Type.forName('GuestUserAnomalyEventStore') != null);
+    }
+
+    @AuraEnabled(cacheable=true)
+    public static boolean isFinanceTransaction() {
+      return (Type.forName('FinanceTransaction') != null);
+    }
+
+    @AuraEnabled(cacheable=true)
+    public static boolean isFinanceBalanceSnapshot() {
+      return (Type.forName('FinanceBalanceSnapshot') != null);
+    }
+
+    @AuraEnabled(cacheable=true)
+    public static boolean isDataDetectPolicy() {
+      return (Type.forName('DataDetectPolicy') != null);
+    }
+
+    @AuraEnabled(cacheable=true)
+    public static boolean isDataDetPlcyDataSrchExps() {
+      return (Type.forName('DataDetPlcyDataSrchExps') != null);
+    }
+
+    @AuraEnabled(cacheable=true)
+    public static boolean isDataDetPlcySstvDataCatg() {
+      return (Type.forName('DataDetPlcySstvDataCatg') != null);
+    }
+
+    @AuraEnabled(cacheable=true)
+    public static boolean isDataDetectPolicySnapshot() {
+      return (Type.forName('DataDetectPolicySnapshot') != null);
+    }
+
+    @AuraEnabled(cacheable=true)
+    public static boolean isDataUseLegalBasis() {
+      return (Type.forName('DataUseLegalBasis') != null);
+    }
+
+    @AuraEnabled(cacheable=true)
+    public static boolean isDataUsePurpose() {
+      return (Type.forName('DataUsePurpose') != null);
+    }
+
+    @AuraEnabled(cacheable=true)
+    public static boolean isProductConsumptionSchedule() {
+      return (Type.forName('ProductConsumptionSchedule') != null);
+    }
 }

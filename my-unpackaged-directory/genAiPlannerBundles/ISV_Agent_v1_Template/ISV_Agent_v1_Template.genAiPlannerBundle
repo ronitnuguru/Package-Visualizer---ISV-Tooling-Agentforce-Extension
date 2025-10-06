@@ -12,5 +12,5 @@
     </genAiPlugins>
     <masterLabel>ISV Agent</masterLabel>
     <plannerType>AiCopilot__ReAct</plannerType>
-    <botTemplate>ISV_Agent_v1_Template</botTemplate>
+    <botTemplate>ISV_Agent</botTemplate>
 </GenAiPlannerBundle>

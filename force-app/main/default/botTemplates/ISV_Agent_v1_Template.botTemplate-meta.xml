@@ -1,12 +1,71 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Bot xmlns="http://soap.sforce.com/2006/04/metadata">
-    <agentTemplate>EmployeeCopilot__AgentforceEmployeeAgent</agentTemplate>
-    <agentType>AgentforceEmployeeAgent</agentType>
-    <botMlDomain>
+<BotTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <masterLabel>ISV Agent</masterLabel>
+    <conversationLanguages>en_US</conversationLanguages>
+    <botDialogs>
+        <botSteps>
+            <botMessages>
+                <message>Hi, I’m Agentforce! I use AI to search trusted sources, and more. Ask me “What else can you do?” to see how I can simplify your workday. How can I help?</message>
+                <messageIdentifier>444711d7-8e2f-44f2-8d68-ee2636e2dfbe</messageIdentifier>
+            </botMessages>
+            <stepIdentifier>e0d12403-4345-4f34-990c-26477f34d768</stepIdentifier>
+            <type>Message</type>
+        </botSteps>
+        <botSteps>
+            <stepIdentifier>a2993703-c2ca-4e90-b9cc-156a62c6e191</stepIdentifier>
+            <type>Wait</type>
+        </botSteps>
+        <developerName>Welcome</developerName>
+        <isPlaceholderDialog>false</isPlaceholderDialog>
+        <label>Welcome</label>
+        <showInFooterMenu>false</showInFooterMenu>
+    </botDialogs>
+    <conversationVariables>
+        <dataType>Text</dataType>
+        <description>Salesforce Application Name.</description>
+        <developerName>currentAppName</developerName>
+        <includeInPrompt>true</includeInPrompt>
+        <label>currentAppName</label>
+        <visibility>External</visibility>
+    </conversationVariables>
+    <conversationVariables>
+        <dataType>Text</dataType>
+        <description>The API name of the Salesforce object (such as Account or Opportunity) associated with the record the user wants to interact with. Do not use this if the user is already talking about another object in the conversation.</description>
+        <developerName>currentObjectApiName</developerName>
+        <includeInPrompt>true</includeInPrompt>
+        <label>currentObjectApiName</label>
+        <visibility>External</visibility>
+    </conversationVariables>
+    <conversationVariables>
+        <dataType>Text</dataType>
+        <description>Type of Salesforce Page.</description>
+        <developerName>currentPageType</developerName>
+        <includeInPrompt>true</includeInPrompt>
+        <label>currentPageType</label>
+        <visibility>External</visibility>
+    </conversationVariables>
+    <conversationVariables>
+        <dataType>Text</dataType>
+        <description>The ID of the record on the user&apos;s screen. It may not relate to the user&apos;s input. Only use this if the user input mentions &apos;this&apos;, &apos;current&apos;, &apos;the record&apos;, etc. If in doubt, don&apos;t use it.</description>
+        <developerName>currentRecordId</developerName>
+        <includeInPrompt>true</includeInPrompt>
+        <label>currentRecordId</label>
+        <visibility>External</visibility>
+    </conversationVariables>
+    <conversationVariables>
+        <dataType>Text</dataType>
+        <description>This variable may also be referred to as VerifiedCustomerId</description>
+        <developerName>VerifiedCustomerId</developerName>
+        <includeInPrompt>false</includeInPrompt>
+        <label>VerifiedCustomerId</label>
+        <visibility>Internal</visibility>
+    </conversationVariables>
+    <entryDialog>Welcome</entryDialog>
+    <mlDomain>
         <label>ISV Agent</label>
-        <name>ISV_Agent</name>
-    </botMlDomain>
-    <botSource>None</botSource>
+        <name>ISV_Agent_v1_Template</name>
+    </mlDomain>
+    <agentType>AgentforceEmployeeAgent</agentType>
     <contextVariables>
         <contextVariableMappings>
             <SObjectType>MessagingEndUser</SObjectType>
@@ -176,9 +235,6 @@
         <label>Routable Id</label>
     </contextVariables>
     <description>Hi! I&apos;m an ISV Agent that helps with Salesforce development. Ask &quot;What orgs can you create?&quot; to see available dev/industry orgs, or &quot;What are my org limits?&quot; to check org health. How can I help?</description>
-    <label>ISV Agent</label>
-    <logPrivateConversationData>false</logPrivateConversationData>
     <richContentEnabled>true</richContentEnabled>
-    <sessionTimeout>0</sessionTimeout>
     <type>InternalCopilot</type>
-</Bot>
+</BotTemplate>

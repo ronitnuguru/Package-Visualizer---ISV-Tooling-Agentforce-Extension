@@ -1,187 +1,188 @@
 public with sharing class AgentConditionalCheckController {
+    
     @AuraEnabled(cacheable=true)
     public static boolean isAccount() {
-      return (Type.forName('Account') != null);
+        return (Type.forName('Account') != null);
     }
-  
+
     @AuraEnabled(cacheable=true)
     public static boolean isContact() {
-      return (Type.forName('Contact') != null);
+        return (Type.forName('Contact') != null);
     }
-  
+
     @AuraEnabled(cacheable=true)
     public static boolean isLead() {
-      return (Type.forName('Lead') != null);
+        return (Type.forName('Lead') != null);
     }
-  
+
     @AuraEnabled(cacheable=true)
     public static boolean isOpportunity() {
-      return (Type.forName('Opportunity') != null);
+        return (Type.forName('Opportunity') != null);
     }
-  
+
     @AuraEnabled(cacheable=true)
     public static boolean isCampaign() {
-      return (Type.forName('Campaign') != null);
+        return (Type.forName('Campaign') != null);
     }
-  
+
     @AuraEnabled(cacheable=true)
     public static boolean isCase() {
-      return (Type.forName('Case') != null);
+        return (Type.forName('Case') != null);
     }
-  
+
     @AuraEnabled(cacheable=true)
     public static boolean isTask() {
-      return (Type.forName('Task') != null);
+        return (Type.forName('Task') != null);
     }
-  
+
     @AuraEnabled(cacheable=true)
     public static boolean isEvent() {
-      return (Type.forName('Event') != null);
+        return (Type.forName('Event') != null);
     }
-  
+
     @AuraEnabled(cacheable=true)
     public static boolean isUser() {
-      return (Type.forName('User') != null);
+        return (Type.forName('User') != null);
     }
-  
+
     @AuraEnabled(cacheable=true)
     public static boolean isOrder() {
-      return (Type.forName('Order') != null);
+        return (Type.forName('Order') != null);
     }
-  
+
     @AuraEnabled(cacheable=true)
     public static boolean isAsset() {
-      return (Type.forName('Asset') != null);
+        return (Type.forName('Asset') != null);
     }
-  
+
     @AuraEnabled(cacheable=true)
     public static boolean isContract() {
-      return (Type.forName('Contract') != null);
+        return (Type.forName('Contract') != null);
     }
-  
+
     @AuraEnabled(cacheable=true)
     public static boolean isPricebook2() {
-      return (Type.forName('Pricebook2') != null);
+        return (Type.forName('Pricebook2') != null);
     }
-  
+
     @AuraEnabled(cacheable=true)
     public static boolean isProduct2() {
-      return (Type.forName('Product2') != null);
+        return (Type.forName('Product2') != null);
     }
-  
+
     @AuraEnabled(cacheable=true)
     public static boolean isCampaignMember() {
-      return (Type.forName('CampaignMember') != null);
+        return (Type.forName('CampaignMember') != null);
     }
-  
+
     @AuraEnabled(cacheable=true)
     public static boolean isActiveScratchOrg() {
-      return (Type.forName('ActiveScratchOrg') != null);
+        return (Type.forName('ActiveScratchOrg') != null);
     }
-  
+
     @AuraEnabled(cacheable=true)
     public static boolean isRecommendation() {
-      return (Type.forName('Recommendation') != null);
+        return (Type.forName('Recommendation') != null);
     }
-  
+
     @AuraEnabled(cacheable=true)
     public static boolean isPackageVersion() {
-      return (Type.forName('sfLma__Package_Version__c') != null);
+        return (Type.forName('sfLma__Package_Version__c') != null);
     }
-  
+
     @AuraEnabled(cacheable=true)
     public static boolean isPackage() {
-      return (Type.forName('sfLma__Package__c') != null);
+        return (Type.forName('sfLma__Package__c') != null);
     }
-  
+
     @AuraEnabled(cacheable=true)
     public static boolean isLicense() {
-      return (Type.forName('sfLma__License__c') != null);
+        return (Type.forName('sfLma__License__c') != null);
     }
-  
+
     @AuraEnabled(cacheable=true)
     public static boolean isContentVersion() {
-      return (Type.forName('ContentVersion') != null);
+        return (Type.forName('ContentVersion') != null);
     }
-  
+
     @AuraEnabled(cacheable=true)
     public static boolean isSignupRequest() {
-      return (Type.forName('SignupRequest') != null);
+        return (Type.forName('SignupRequest') != null);
     }
-  
+
     @AuraEnabled(cacheable=true)
     public static boolean isLMA() {
-      return (Type.forName('sfLma__License__c') != null);
+        return (Type.forName('sfLma__License__c') != null);
     }
-  
+
     @AuraEnabled(cacheable=true)
     public static boolean isFmaParameter() {
-      return (Type.forName('sfFma__FeatureParameter__c') != null);
+        return (Type.forName('sfFma__FeatureParameter__c') != null);
     }
-  
+
     @AuraEnabled(cacheable=true)
     public static boolean isActivity() {
-      return (Type.forName('Activity') != null);
+        return (Type.forName('Activity') != null);
     }
-  
+
     @AuraEnabled(cacheable=true)
     public static boolean isAddress() {
-      return (Type.forName('Address') != null);
+        return (Type.forName('Address') != null);
     }
-  
+
     @AuraEnabled(cacheable=true)
     public static boolean isDigitalWallet() {
-      return (Type.forName('DigitalWallet') != null);
+        return (Type.forName('DigitalWallet') != null);
     }
-  
+
     @AuraEnabled(cacheable=true)
     public static boolean isEmployee() {
-      return (Type.forName('Employee') != null);
+        return (Type.forName('Employee') != null);
     }
-  
+
     @AuraEnabled(cacheable=true)
     public static boolean isLocation() {
-      return (Type.forName('Location') != null);
+        return (Type.forName('Location') != null);
     }
-  
+
     @AuraEnabled(cacheable=true)
     public static boolean isPayment() {
-      return (Type.forName('Payment') != null);
+        return (Type.forName('Payment') != null);
     }
-  
+
     @AuraEnabled(cacheable=true)
     public static boolean isRefund() {
-      return (Type.forName('Refund') != null);
+        return (Type.forName('Refund') != null);
     }
-  
+
     @AuraEnabled(cacheable=true)
     public static boolean isWorkStep() {
-      return (Type.forName('WorkStep') != null);
+        return (Type.forName('WorkStep') != null);
     }
-  
+
     @AuraEnabled(cacheable=true)
     public static boolean isSeller() {
-      return (Type.forName('Seller') != null);
+        return (Type.forName('Seller') != null);
     }
-  
+
     @AuraEnabled(cacheable=true)
     public static boolean isScorecard() {
-      return (Type.forName('Scorecard') != null);
+        return (Type.forName('Scorecard') != null);
     }
-  
+
     @AuraEnabled(cacheable=true)
     public static boolean isProblemIncident() {
-      return (Type.forName('ProblemIncident') != null);
+        return (Type.forName('ProblemIncident') != null);
     }
-  
+
     @AuraEnabled(cacheable=true)
     public static boolean isPartyConsent() {
-      return (Type.forName('PartyConsent') != null);
+        return (Type.forName('PartyConsent') != null);
     }
-  
+
     @AuraEnabled(cacheable=true)
     public static boolean isPaymentLineInvoice() {
-      return (Type.forName('PaymentLineInvoice') != null);
+        return (Type.forName('PaymentLineInvoice') != null);
     }
 
     @AuraEnabled(cacheable=true)

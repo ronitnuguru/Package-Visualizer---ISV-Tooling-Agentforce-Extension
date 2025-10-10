@@ -1,9 +1,14 @@
 @JsonAccess(serializable='always' deserializable='always')
 global with sharing class AgentLimitsController {
 
-    @InvocableMethod(label='Get Org Limits via ISV Agent' description='Display a custom list of limits from the current Salesforce org' category='ISV Agent')
+    @InvocableMethod(
+        label='Get Org Limits via ISV Agent' 
+        description='Display a custom list of limits from the current Salesforce org' 
+        category='ISV Agent'
+    )
     global static List<AgentLimitsResponse> getOrgLimits(List<AgentLimitsRequest> limitsReq) {
         List<AgentLimitsResponse> responses = new List<AgentLimitsResponse>();
+        
         for (AgentLimitsRequest request : limitsReq) {
             try {
                 HTTPRequest req = new HTTPRequest(); 
@@ -11,27 +16,48 @@ global with sharing class AgentLimitsController {
                 req.setMethod('GET');
                 req.setHeader('Authorization', 'Bearer ' + Package2Interface.getSessionId());
                 req.setHeader('Content-Type', 'application/json');
+                
                 Http h = new Http();
                 HttpResponse res = h.send(req);
+                
                 if (res.getStatusCode() == 200) {
-                    String result = res.getBody(); List<AgentOrgLimit> limitsList = parseLimitsResponse(result); AgentLimitsResponse response = new AgentLimitsResponse(limitsList); responses.add(response);
-                } else { AgentLimitsResponse response = new AgentLimitsResponse(new List<AgentOrgLimit>()); responses.add(response); }
-            } catch (Exception e) { AgentLimitsResponse response = new AgentLimitsResponse(new List<AgentOrgLimit>()); responses.add(response); }
-        } return responses;
+                    String result = res.getBody(); 
+                    List<AgentOrgLimit> limitsList = parseLimitsResponse(result); 
+                    AgentLimitsResponse response = new AgentLimitsResponse(limitsList); 
+                    responses.add(response);
+                } else { 
+                    AgentLimitsResponse response = new AgentLimitsResponse(new List<AgentOrgLimit>()); 
+                    responses.add(response); 
+                }
+            } catch (Exception e) { 
+                AgentLimitsResponse response = new AgentLimitsResponse(new List<AgentOrgLimit>()); 
+                responses.add(response); 
+            }
+        } 
+        
+        return responses;
     }
 
     @JsonAccess(serializable='always' deserializable='always')
     global class AgentLimitsRequest {
-        @InvocableVariable(label='Limits Request' description='Request to get limits from the current Salesforce org' required=true)
+        @InvocableVariable(
+            label='Limits Request' 
+            description='Request to get limits from the current Salesforce org' 
+            required=true
+        )
         global String limitsRequest;
     }
     
     @JsonAccess(serializable='always' deserializable='always')
     global class AgentLimitsResponse {
-        @InvocableVariable(label='Limits Response' description='List of limits from the current Salesforce org' required=true)
+        @InvocableVariable(
+            label='Limits Response' 
+            description='List of limits from the current Salesforce org' 
+            required=true
+        )
         global List<AgentOrgLimit> result;
 
-        global AgentLimitsResponse(List<AgentOrgLimit> jsonResult){
+        global AgentLimitsResponse(List<AgentOrgLimit> jsonResult) {
             this.result = jsonResult;
         }
     }
@@ -56,8 +82,20 @@ global with sharing class AgentLimitsController {
         @InvocableVariable
         global String status;
 
-        global AgentOrgLimit(String limitName, Integer maxValue, Integer remainingValue, String limitType, String limitDescription, String limitStatus){
-            this.name = limitName; this.max = maxValue; this.remaining = remainingValue; this.type = limitType; this.description = limitDescription; this.status = limitStatus;
+        global AgentOrgLimit(
+            String limitName, 
+            Integer maxValue, 
+            Integer remainingValue, 
+            String limitType, 
+            String limitDescription, 
+            String limitStatus
+        ) {
+            this.name = limitName; 
+            this.max = maxValue; 
+            this.remaining = remainingValue; 
+            this.type = limitType; 
+            this.description = limitDescription; 
+            this.status = limitStatus;
         }
     }
 
@@ -75,6 +113,10 @@ global with sharing class AgentLimitsController {
                 AgentOrgLimit limitObj = new AgentOrgLimit(limitName, maxValue, remainingValue, limitType, description, status);
                 limitsList.add(limitObj);
             }
-        } catch (Exception e) { System.debug('Error parsing limits response: ' + e.getMessage());} return limitsList;
+        } catch (Exception e) { 
+            System.debug('Error parsing limits response: ' + e.getMessage());
+        } 
+        
+        return limitsList;
     }
 }

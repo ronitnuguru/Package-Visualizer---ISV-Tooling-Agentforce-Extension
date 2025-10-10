@@ -1,17 +1,13 @@
 {
   "packageDirectories": [
     {
-      "versionName": "ver 0.2",
-      "versionNumber": "0.2.0.NEXT",
+      "versionName": "ver 0.4",
+      "versionNumber": "0.4.0.NEXT",
+      "ancestorVersion": "0.3.0",
       "calculateTransitiveDependencies": true,
       "path": "force-app",
       "default": true,
       "package": "Package Visualizer + ISV Tooling Agentforce Extension",
-      "packageMetadataAccess": {
-        "permissionSets": [
-          "EinsteinGPTPromptTemplateManager"
-        ]
-      },
       "dependencies": [
         {
           "package": "04tRh000001LnJhIAK"
@@ -22,7 +18,7 @@
   "name": "Package Visualizer + ISV Tooling Agentforce Extension",
   "namespace": "pkgviz",
   "sfdcLoginUrl": "https://login.salesforce.com",
-  "sourceApiVersion": "64.0",
+  "sourceApiVersion": "65.0",
   "packageAliases": {
     "Package Visualizer + ISV Tooling Agentforce Extension": "0HoRh0000000673KAA",
     "Package Visualizer + ISV Tooling Agentforce Extension@0.1.0-1": "04tRh000001LoIzIAK",
@@ -40,6 +36,12 @@
     "Package Visualizer + ISV Tooling Agentforce Extension@0.1.0-14": "04tRh000001MpbBIAS",
     "Package Visualizer + ISV Tooling Agentforce Extension@0.1.0-16": "04tRh000001MpePIAS",
     "Package Visualizer + ISV Tooling Agentforce Extension@0.1.0-17": "04tRh000001MphdIAC",
-    "Package Visualizer + ISV Tooling Agentforce Extension@0.2.0-1": "04tRh000001NBdJIAW"
+    "Package Visualizer + ISV Tooling Agentforce Extension@0.2.0-1": "04tRh000001NBdJIAW",
+    "Package Visualizer + ISV Tooling Agentforce Extension@0.3.0-2": "04tRh000001NoefIAC",
+    "Package Visualizer + ISV Tooling Agentforce Extension@0.4.0-1": "04tRh000001NojVIAS",
+    "Package Visualizer + ISV Tooling Agentforce Extension@0.4.0-2": "04tRh000001Nol7IAC",
+    "Package Visualizer + ISV Tooling Agentforce Extension@0.4.0-3": "04tRh000001NomjIAC",
+    "Package Visualizer + ISV Tooling Agentforce Extension@0.4.0-4": "04tRh000001NooLIAS",
+    "Package Visualizer + ISV Tooling Agentforce Extension@0.4.0-5": "04tRh000001NopxIAC"
   }
 }

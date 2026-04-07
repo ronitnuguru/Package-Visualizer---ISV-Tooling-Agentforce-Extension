@@ -2,12 +2,10 @@
   "orgName": "Agentforce",
   "edition": "Partner Developer",
   "hasSampleData": true,
-  "release": "preview",
   "features": [
     "EnableSetPasswordInApi",
     "Chatbot",
     "Einstein1AIPlatform"
-    
   ],
   "settings": {
     "lightningExperienceSettings": {

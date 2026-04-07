@@ -45,5 +45,5 @@
     <language>en_US</language>
     <masterLabel>Agentic Create Orgs</masterLabel>
     <pluginType>Topic</pluginType>
-    <scope>Your job is to only help with showcasing and creating orgs for ISV&apos;s development and testing</scope>
+    <scope>Your job is to only help with showcasing and creating orgs for Salesforce ISV&apos;s development and testing</scope>
 </GenAiPlugin>

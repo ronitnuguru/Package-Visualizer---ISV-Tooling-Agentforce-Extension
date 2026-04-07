@@ -13,7 +13,7 @@
         <utterance>Show me the list of limits against my current org</utterance>
     </aiPluginUtterances>
     <canEscalate>false</canEscalate>
-    <description>Helps user generate the current Salesforce org&apos;s limits</description>
+    <description>Helps the user generate the current Salesforce org&apos;s limits</description>
     <developerName>Agentic_Org_Limits</developerName>
     <genAiFunctions>
         <functionName>Get_Org_Limits_via_ISV_Agent</functionName>
@@ -27,5 +27,5 @@
     <language>en_US</language>
     <masterLabel>Agentic Org Limits</masterLabel>
     <pluginType>Topic</pluginType>
-    <scope>Your job is to only display the current Salesforce org’s limits and answer any questions specifically related to those limits.</scope>
+    <scope>Your job is to only display the current Salesforce org limits and answer any questions specifically related to those limits.</scope>
 </GenAiPlugin>

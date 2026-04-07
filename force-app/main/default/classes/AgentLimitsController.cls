@@ -27,14 +27,13 @@ global with sharing class AgentLimitsController {
                     responses.add(response);
                 } else { 
                     AgentLimitsResponse response = new AgentLimitsResponse(new List<AgentOrgLimit>()); 
-                    responses.add(response); 
+                    responses.add(response);
                 }
             } catch (Exception e) { 
                 AgentLimitsResponse response = new AgentLimitsResponse(new List<AgentOrgLimit>()); 
-                responses.add(response); 
+                responses.add(response);
             }
-        } 
-        
+        }
         return responses;
     }
 
@@ -116,7 +115,6 @@ global with sharing class AgentLimitsController {
         } catch (Exception e) { 
             System.debug('Error parsing limits response: ' + e.getMessage());
         } 
-        
         return limitsList;
     }
 }

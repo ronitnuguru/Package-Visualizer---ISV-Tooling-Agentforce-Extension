@@ -1,9 +1,9 @@
 {
   "packageDirectories": [
     {
-      "versionName": "ver 0.4",
-      "versionNumber": "0.4.0.NEXT",
-      "ancestorVersion": "0.3.0",
+      "versionName": "ver 0.6",
+      "versionNumber": "0.6.0.NEXT",
+      "ancestorVersion": "0.5.0",
       "calculateTransitiveDependencies": true,
       "path": "force-app",
       "default": true,
@@ -18,7 +18,7 @@
   "name": "Package Visualizer + ISV Tooling Agentforce Extension",
   "namespace": "pkgviz",
   "sfdcLoginUrl": "https://login.salesforce.com",
-  "sourceApiVersion": "65.0",
+  "sourceApiVersion": "66.0",
   "packageAliases": {
     "Package Visualizer + ISV Tooling Agentforce Extension": "0HoRh0000000673KAA",
     "Package Visualizer + ISV Tooling Agentforce Extension@0.1.0-1": "04tRh000001LoIzIAK",
@@ -42,6 +42,11 @@
     "Package Visualizer + ISV Tooling Agentforce Extension@0.4.0-2": "04tRh000001Nol7IAC",
     "Package Visualizer + ISV Tooling Agentforce Extension@0.4.0-3": "04tRh000001NomjIAC",
     "Package Visualizer + ISV Tooling Agentforce Extension@0.4.0-4": "04tRh000001NooLIAS",
-    "Package Visualizer + ISV Tooling Agentforce Extension@0.4.0-5": "04tRh000001NopxIAC"
+    "Package Visualizer + ISV Tooling Agentforce Extension@0.4.0-5": "04tRh000001NopxIAC",
+    "Package Visualizer + ISV Tooling Agentforce Extension@0.5.0-1": "04tRh000001bAELIA2",
+    "Package Visualizer + ISV Tooling Agentforce Extension@0.5.0-2": "04tRh000001bAFxIAM",
+    "Package Visualizer + ISV Tooling Agentforce Extension@0.5.0-3": "04tRh000001bHyzIAE",
+    "Package Visualizer + ISV Tooling Agentforce Extension@0.5.0-4": "04tRh000001bI3pIAE",
+    "Package Visualizer + ISV Tooling Agentforce Extension@0.6.0-1": "04tRh000001bI8fIAE"
   }
 }

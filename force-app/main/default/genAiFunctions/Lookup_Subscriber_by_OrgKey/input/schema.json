@@ -1,0 +1,14 @@
+{
+  "required" : [ "orgKey" ],
+  "unevaluatedProperties" : false,
+  "properties" : {
+    "orgKey" : {
+      "title" : "Org Key",
+      "description" : "15 or 18 character Salesforce organization ID, or a 6+ character prefix.",
+      "lightning:type" : "lightning__textType",
+      "lightning:isPII" : false,
+      "copilotAction:isUserInput" : true
+    }
+  },
+  "lightning:type" : "lightning__objectType"
+}

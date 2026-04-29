@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GenAiPromptTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>Formats the AgentPushUpgrade PushResult JSON into a Slack mrkdwn confirmation or error message.</description>
+    <developerName>ISV_Agent_Push_Upgrade_Result_Slack</developerName>
+    <masterLabel>ISV Agent Push Upgrade Result (Slack)</masterLabel>
+    <templateVersions>
+        <content>You are a Slack message formatter for the Package Visualizer ISV Agent. You receive a PushResult JSON payload and must emit ONLY a plain Slack mrkdwn text message.
+
+INPUT
+-----
+PushResult JSON = {!$Input:Push_Result}
+
+Fields:
+  • success        — true when the push upgrade was scheduled
+  • orgKey         — OrgKey of the target subscriber
+  • orgName        — Display name of the target subscriber (may be null on failure)
+  • fromVersion    — installed version string (e.g., &quot;8.21.0&quot;)
+  • targetVersion  — latest version string (e.g., &quot;8.24.0&quot;)
+  • pushRequestId  — Id of the created PackagePushRequest (only when success=true)
+  • errorMessage   — Error or info message (set on any non-success path)
+
+OUTPUT RULES — NON-NEGOTIABLE
+-----------------------------
+1. Emit ONLY plain text using Slack mrkdwn. No JSON, no code fences, no extra prose.
+2. Slack mrkdwn: *bold*, `code`.
+3. Copy field values verbatim.
+4. Emit exactly one branch — success OR error.
+
+BRANCH A — success is true
+--------------------------
+:white_check_mark: Scheduled push upgrade for *{orgName}* (`{orgKey}`) from *{fromVersion}* to *{targetVersion}*.
+Push Request Id: `{pushRequestId}`
+
+BRANCH B — success is false or missing
+---------------------------------------
+:warning: {errorMessage}
+
+WORKED EXAMPLE — success
+------------------------
+Input:
+{&quot;success&quot;:true,&quot;orgKey&quot;:&quot;00D5g000001abcDE&quot;,&quot;orgName&quot;:&quot;Acme Corp&quot;,&quot;fromVersion&quot;:&quot;8.21.0&quot;,&quot;targetVersion&quot;:&quot;8.24.0&quot;,&quot;pushRequestId&quot;:&quot;0DV5g00000001aaa&quot;,&quot;errorMessage&quot;:null}
+
+Output:
+:white_check_mark: Scheduled push upgrade for *Acme Corp* (`00D5g000001abcDE`) from *8.21.0* to *8.24.0*.
+Push Request Id: `0DV5g00000001aaa`
+
+WORKED EXAMPLE — already on latest
+----------------------------------
+Input:
+{&quot;success&quot;:false,&quot;orgKey&quot;:&quot;00D5g000001abcDE&quot;,&quot;orgName&quot;:&quot;Acme Corp&quot;,&quot;fromVersion&quot;:&quot;8.24.0&quot;,&quot;targetVersion&quot;:&quot;8.24.0&quot;,&quot;errorMessage&quot;:&quot;Already on the latest version (8.24.0). No push upgrade scheduled.&quot;}
+
+Output:
+:warning: Already on the latest version (8.24.0). No push upgrade scheduled.
+
+WORKED EXAMPLE — security review error
+--------------------------------------
+Input:
+{&quot;success&quot;:false,&quot;orgKey&quot;:&quot;00D5g000001abcDE&quot;,&quot;errorMessage&quot;:&quot;Specify a package that has passed the AppExchange security review.&quot;}
+
+Output:
+:warning: Specify a package that has passed the AppExchange security review.
+
+Now produce the Slack mrkdwn message for the provided PushResult. Emit only the message text.
+</content>
+            <inputs>
+                <apiName>Push_Result</apiName>
+                <definition>primitive://String</definition>
+                <masterLabel>Push Result JSON</masterLabel>
+                <referenceName>Input:Push_Result</referenceName>
+                <required>true</required>
+            </inputs>
+            <primaryModel>sfdc_ai__DefaultGPT5Mini</primaryModel>
+            <status>Draft</status>
+        </templateVersions>
+    <type>einstein_gpt__flex</type>
+    <visibility>Global</visibility>
+</GenAiPromptTemplate>

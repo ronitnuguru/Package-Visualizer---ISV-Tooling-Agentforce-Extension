@@ -1,11 +1,16 @@
 {
-  "orgName": "Agentforce",
+  "orgName": "AF + DC + Tab Next",
   "edition": "Partner Developer",
   "hasSampleData": true,
   "features": [
     "EnableSetPasswordInApi",
+    "Einstein1AIPlatform",
     "Chatbot",
-    "Einstein1AIPlatform"
+    "CustomerDataPlatform",
+    "CustomerDataPlatformLite",
+    "MarketingUser",
+    "DevelopmentWave",
+    "TableauEinstein"
   ],
   "settings": {
     "lightningExperienceSettings": {
@@ -20,7 +25,10 @@
       "enableEinsteinGptPlatform": "true"
     },
     "botSettings": {
-      "enableBots": true
+      "enableBots": "true"
+    },
+    "customerDataPlatformSettings": {
+      "enableCustomerDataPlatform": "true"
     }
   }
 }

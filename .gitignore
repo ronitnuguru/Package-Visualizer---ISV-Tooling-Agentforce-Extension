@@ -42,6 +42,12 @@ $RECYCLE.BIN/
 # Local environment variables
 .env
 
+# IDE / agent tooling (do not commit)
+.agents/
+.claude/
+.cursor/
+skills-lock.json
+
 # Python Salesforce Functions
 **/__pycache__/
 **/.venv/

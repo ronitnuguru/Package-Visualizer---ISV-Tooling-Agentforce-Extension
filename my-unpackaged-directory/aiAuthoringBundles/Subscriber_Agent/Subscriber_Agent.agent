@@ -58,7 +58,7 @@ variables:
         description: "This variable may also be referred to as VerifiedCustomerId"
         visibility: "Internal"
     subscriber_result_json: mutable string = ""
-        description: "JSON payload returned by the Lookup_Subscriber_by_OrgKey Apex invocable. Passed into the Slack prompt template."
+        description: "JSON payload returned by the LookupSubscriber_by_OrgKey Apex invocable. Passed into the Slack prompt template."
         visibility: "Internal"
     slack_message: mutable string = ""
         description: "Formatted Slack mrkdwn text produced by the ISV_Agent_Subscriber_Summary_Slack prompt template. Sent verbatim to the user."
@@ -208,7 +208,7 @@ subagent Agentic_Subscriber_Lookup:
                 description: "Format search results as a Slack message. Call this after search_by_name."
                 with "Input:Search_Result" = @variables.search_result_json
                 set @variables.slack_message = @outputs.promptResponse
-            lookup_by_orgkey: @actions.Lookup_Subscriber_by_OrgKey
+            lookup_by_orgkey: @actions.LookupSubscriber_by_OrgKey
                 description: "Look up subscriber by OrgKey (15-18 chars or 6+ char prefix). Returns JSON payload with installation details."
                 with orgKey = ...
                 set @variables.subscriber_result_json = @outputs.resultJson
@@ -219,7 +219,7 @@ subagent Agentic_Subscriber_Lookup:
             go_to_push_upgrade: @utils.transition to @subagent.Push_Upgrade_Confirmation
                 description: "Transition to push upgrade confirmation flow. Use when user requests an upgrade."
     actions:
-        Lookup_Subscriber_by_OrgKey:
+        LookupSubscriber_by_OrgKey:
             description: "Resolves a subscriber OrgKey (15 or 18 chars, or 6+ char prefix for disambiguation) to installed version, last upgrade, org status, and instance health. Returns a LookupResult JSON payload."
             label: "Lookup Subscriber by OrgKey"
             require_user_confirmation: False
@@ -241,14 +241,14 @@ subagent Agentic_Subscriber_Lookup:
                     filter_from_agent: False
                     complex_data_type_name: "lightning__textType"
         Render_Subscriber_Summary_Slack:
-            description: "Formats the Lookup_Subscriber_by_OrgKey result JSON into a formatted Slack text message."
+            description: "Formats the LookupSubscriber_by_OrgKey result JSON into a formatted Slack text message."
             label: "Render Subscriber Summary (Slack)"
             require_user_confirmation: False
             include_in_progress_indicator: False
             target: "generatePromptResponse://ISV_Agent_Subscriber_Summary_Slack"
             inputs:
                 "Input:Lookup_Result": string
-                    description: "The resultJson output from the Lookup_Subscriber_by_OrgKey action."
+                    description: "The resultJson output from the LookupSubscriber_by_OrgKey action."
                     label: "Lookup Result"
                     is_required: True
                     is_user_input: False

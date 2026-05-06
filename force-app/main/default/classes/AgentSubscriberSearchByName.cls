@@ -1,6 +1,8 @@
 @JsonAccess(serializable='always' deserializable='always')
 global with sharing class AgentSubscriberSearchByName {
 
+    @TestVisible private static List<ObjectWrappers.PackageSubscriberWrapper> mockSubscribers;
+
     private static final Integer MAX_PRODUCTIONS     = 5;
     private static final Integer MAX_SANDBOXES       = 5;
     private static final Integer MAX_ORPHANS         = 5;
@@ -68,6 +70,7 @@ global with sharing class AgentSubscriberSearchByName {
     }
 
     private static List<ObjectWrappers.PackageSubscriberWrapper> queryByOrgName(String term) {
+        if (mockSubscribers != null) return mockSubscribers;
         // Same SEARCH (LIKE %value%) pattern used in AgentSubscriberLookup.prefixSearch.
         ObjectWrappers.FilterWrapper fw = new ObjectWrappers.FilterWrapper();
         fw.fieldName = 'OrgName';

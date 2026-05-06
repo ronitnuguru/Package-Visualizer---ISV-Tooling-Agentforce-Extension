@@ -1,0 +1,24 @@
+{
+  "unevaluatedProperties" : false,
+  "properties" : {
+    "result" : {
+      "title" : "Lookup Result",
+      "description" : "Structured lookup result. Exactly one of subscriber, disambiguation, or errorMessage is populated.",
+      "lightning:type" : "@apexClassType/c__AgentSubscriberWrappers$LookupResult",
+      "lightning:isPII" : false,
+      "copilotAction:isDisplayable" : false,
+      "copilotAction:isUsedByPlanner" : true,
+      "copilotAction:useHydratedPrompt" : false
+    },
+    "resultJson" : {
+      "title" : "Lookup Result JSON",
+      "description" : "JSON serialization of the lookup result. Feed this into the Slack prompt template.",
+      "lightning:type" : "lightning__textType",
+      "lightning:isPII" : false,
+      "copilotAction:isDisplayable" : false,
+      "copilotAction:isUsedByPlanner" : true,
+      "copilotAction:useHydratedPrompt" : false
+    }
+  },
+  "lightning:type" : "lightning__objectType"
+}

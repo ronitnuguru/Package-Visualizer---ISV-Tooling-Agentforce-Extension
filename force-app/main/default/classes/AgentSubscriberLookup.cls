@@ -2,6 +2,9 @@
 global with sharing class AgentSubscriberLookup {
 
     @TestVisible private static HttpCalloutMock httpMock;
+    @TestVisible private static List<ObjectWrappers.PackageSubscriberWrapper> mockSubscribers;
+    @TestVisible private static List<ObjectWrappers.PackageVersionWrapper> mockVersions;
+    @TestVisible private static List<String> mockLatestVersionIds;
 
     @InvocableMethod(
         label='Lookup Subscriber by OrgKey'
@@ -123,6 +126,7 @@ global with sharing class AgentSubscriberLookup {
     }
 
     private static List<ObjectWrappers.PackageSubscriberWrapper> queryPackageSubscribers(String value, String dataType, String lim) {
+        if (mockSubscribers != null) return mockSubscribers;
         ObjectWrappers.FilterWrapper fw = new ObjectWrappers.FilterWrapper();
         fw.fieldName = 'OrgKey';
         fw.value     = value;
@@ -148,19 +152,23 @@ global with sharing class AgentSubscriberLookup {
         v.versionsBehind = 0;
         if (String.isBlank(installedPkgVersionId)) return v;
 
-        // Look up the installed version record to get MAJOR.MINOR.PATCH + its Package2Id.
-        ObjectWrappers.FilterWrapper fw = new ObjectWrappers.FilterWrapper();
-        fw.fieldName = 'SubscriberPackageVersionId';
-        fw.value     = installedPkgVersionId;
-        fw.dataType  = 'STRING';
-        List<ObjectWrappers.PackageVersionWrapper> installedRows = Package2Interface.getPackage2Versions(
-            new List<ObjectWrappers.FilterWrapper>{ fw },
-            null, null, null, null,
-            'versionNumber',
-            'DESC',
-            '1',
-            '0'
-        );
+        List<ObjectWrappers.PackageVersionWrapper> installedRows;
+        if (mockVersions != null) {
+            installedRows = mockVersions;
+        } else {
+            ObjectWrappers.FilterWrapper fw = new ObjectWrappers.FilterWrapper();
+            fw.fieldName = 'SubscriberPackageVersionId';
+            fw.value     = installedPkgVersionId;
+            fw.dataType  = 'STRING';
+            installedRows = Package2Interface.getPackage2Versions(
+                new List<ObjectWrappers.FilterWrapper>{ fw },
+                null, null, null, null,
+                'versionNumber',
+                'DESC',
+                '1',
+                '0'
+            );
+        }
         if (installedRows == null || installedRows.isEmpty()) return v;
 
         ObjectWrappers.PackageVersionWrapper installed = installedRows[0];
@@ -169,24 +177,34 @@ global with sharing class AgentSubscriberLookup {
         String package2Id  = installed.package2Id;
         if (String.isBlank(package2Id)) return v;
 
-        // Latest versions for this Package2, sorted by CreatedDate DESC. Base-package method
-        // returns just the SubscriberPackageVersionId strings — perfect for a "versions behind" count.
-        List<String> latestIds = Package2Interface.getLatestPackageVersionsList(package2Id, '50');
+        List<String> latestIds = (mockLatestVersionIds != null)
+            ? mockLatestVersionIds
+            : Package2Interface.getLatestPackageVersionsList(package2Id, '50');
         if (latestIds == null || latestIds.isEmpty()) return v;
 
-        // Index 0 is the newest. Fetch the full record for the latest to get its version string.
-        ObjectWrappers.FilterWrapper fwLatest = new ObjectWrappers.FilterWrapper();
-        fwLatest.fieldName = 'SubscriberPackageVersionId';
-        fwLatest.value     = latestIds[0];
-        fwLatest.dataType  = 'STRING';
-        List<ObjectWrappers.PackageVersionWrapper> latestRow = Package2Interface.getPackage2Versions(
-            new List<ObjectWrappers.FilterWrapper>{ fwLatest },
-            null, null, null, null,
-            'versionNumber',
-            'DESC',
-            '1',
-            '0'
-        );
+        List<ObjectWrappers.PackageVersionWrapper> latestRow;
+        if (mockVersions != null) {
+            latestRow = new List<ObjectWrappers.PackageVersionWrapper>();
+            for (ObjectWrappers.PackageVersionWrapper mv : mockVersions) {
+                if (mv.subscriberPackageVersionId == latestIds[0]) {
+                    latestRow.add(mv);
+                    break;
+                }
+            }
+        } else {
+            ObjectWrappers.FilterWrapper fwLatest = new ObjectWrappers.FilterWrapper();
+            fwLatest.fieldName = 'SubscriberPackageVersionId';
+            fwLatest.value     = latestIds[0];
+            fwLatest.dataType  = 'STRING';
+            latestRow = Package2Interface.getPackage2Versions(
+                new List<ObjectWrappers.FilterWrapper>{ fwLatest },
+                null, null, null, null,
+                'versionNumber',
+                'DESC',
+                '1',
+                '0'
+            );
+        }
         ObjectWrappers.PackageVersionWrapper latest = null;
         if (latestRow != null && !latestRow.isEmpty()) {
             latest = latestRow[0];

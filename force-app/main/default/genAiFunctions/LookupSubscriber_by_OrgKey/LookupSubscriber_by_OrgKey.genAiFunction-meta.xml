@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GenAiFunction xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>Resolves a subscriber OrgKey to installed version, last upgrade, org status, and instance health. Supports 6+ character prefix for disambiguation.</description>
+    <developerName>LookupSubscriber_by_OrgKey</developerName>
+    <invocationTarget>AgentSubscriberLookup</invocationTarget>
+    <invocationTargetType>apex</invocationTargetType>
+    <isConfirmationRequired>false</isConfirmationRequired>
+    <isIncludeInProgressIndicator>true</isIncludeInProgressIndicator>
+    <localDeveloperName>LookupSubscriber_by_OrgKey</localDeveloperName>
+    <masterLabel>Lookup Subscriber by OrgKey</masterLabel>
+    <progressIndicatorMessage>Loading Subscriber Agent...</progressIndicatorMessage>
+</GenAiFunction>

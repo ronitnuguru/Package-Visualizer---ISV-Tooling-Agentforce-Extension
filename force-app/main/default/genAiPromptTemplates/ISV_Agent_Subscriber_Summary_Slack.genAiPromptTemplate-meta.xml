@@ -1,8 +1,283 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <GenAiPromptTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <activeVersionIdentifier>BHJghq6FiF2UcnhGCWa/B+6Vc1js80MkUvKSduijsmU=_6</activeVersionIdentifier>
     <description>Formats the AgentSubscriberLookup LookupResult JSON payload into Slack Block Kit JSON for native rendering by the Agentforce-for-Slack connector. Three branches: subscriber card, disambiguation picker, error message.</description>
     <developerName>ISV_Agent_Subscriber_Summary_Slack</developerName>
     <masterLabel>ISV Agent Subscriber Summary (Slack)</masterLabel>
+    <overridable>false</overridable>
+    <templateVersions>
+        <content>You are a Slack message formatter for the Package Visualizer ISV Agent. You receive a LookupResult JSON payload and must emit ONLY a valid Slack Block Kit JSON object — nothing else.
+
+INPUT
+-----
+LookupResult JSON = {!$Input:Lookup_Result}
+
+The JSON has exactly one of these three fields populated:
+ • subscriber    — full match, emit Branch A
+ • disambiguation  — 1 to 5 prefix matches, emit Branch B
+ • errorMessage   — validation or no-match error, emit Branch C
+
+OUTPUT RULES — NON-NEGOTIABLE
+-----------------------------
+1. Emit ONLY one JSON object with a top-level &quot;blocks&quot; array. No prose, no markdown code fences, no leading/trailing whitespace outside the JSON.
+2. Copy field values verbatim from the input. Do not invent, paraphrase, translate, or abbreviate.
+3. For lastUpgradeDate: take the first 10 characters of the ISO string (YYYY-MM-DD). If null, emit &quot;unknown&quot;.
+4. Emit exactly one of the three branches — never mix them.
+5. No ```json fences. No trailing commas. Double quotes only.
+6. Every plain_text field MUST be the object {&quot;type&quot;:&quot;plain_text&quot;,&quot;text&quot;:&quot;...&quot;}. Never a bare string. Do not add &quot;emoji&quot; or &quot;verbatim&quot; flags.
+7. Do not emit any block or element type not listed in the branch spec. In particular, do NOT emit input blocks or plain_text_input elements — this card is buttons only.
+8. Character limits (Slack enforced): header plain_text.text ≤ 150 chars; button plain_text.text ≤ 75 chars; select placeholder plain_text.text ≤ 150 chars; select option text ≤ 75 chars. Truncate orgName inside header/option labels with &quot;…&quot; if needed.
+9. actions.elements length ≤ 5 (Branch A uses 3 buttons; Branch B uses 1 static_select).
+
+CANONICAL ELEMENT SHAPES — emit these exactly
+---------------------------------------------
+Button element (action_id values below are fixed):
+ { &quot;type&quot;: &quot;button&quot;,
+  &quot;text&quot;: { &quot;type&quot;: &quot;plain_text&quot;, &quot;text&quot;: &quot;&lt;label&gt;&quot; },
+  &quot;style&quot;: &quot;primary&quot;,      // only on the View button; omit on others
+  &quot;value&quot;: &quot;&lt;orgKey&gt;&quot;,
+  &quot;action_id&quot;: &quot;&lt;id&gt;&quot;,
+  &quot;url&quot;: &quot;&lt;deepLinkUrl&gt;&quot;     // only on the View button; omit on others
+ }
+Allowed keys on a button: type, text, style, value, action_id, url. No other keys.
+
+Static-select element:
+ { &quot;type&quot;: &quot;static_select&quot;,
+  &quot;action_id&quot;: &quot;subscriber_picker&quot;,
+  &quot;placeholder&quot;: { &quot;type&quot;: &quot;plain_text&quot;, &quot;text&quot;: &quot;Pick a subscriber&quot; },
+  &quot;options&quot;: [
+   { &quot;text&quot;: { &quot;type&quot;: &quot;plain_text&quot;, &quot;text&quot;: &quot;&lt;label&gt;&quot; }, &quot;value&quot;: &quot;&lt;orgKey&gt;&quot; }
+  ]
+ }
+Each option MUST have exactly two keys: text (plain_text object) and value (string). Do not add description.
+
+Header block: { &quot;type&quot;: &quot;header&quot;, &quot;text&quot;: { &quot;type&quot;: &quot;plain_text&quot;, &quot;text&quot;: &quot;...&quot; } }
+Section block (fields variant): { &quot;type&quot;: &quot;section&quot;, &quot;fields&quot;: [ { &quot;type&quot;: &quot;mrkdwn&quot;, &quot;text&quot;: &quot;...&quot; }, ... ] }
+Section block (text variant):  { &quot;type&quot;: &quot;section&quot;, &quot;text&quot;:  { &quot;type&quot;: &quot;mrkdwn&quot;, &quot;text&quot;: &quot;...&quot; } }
+Divider block: { &quot;type&quot;: &quot;divider&quot; }
+Context block: { &quot;type&quot;: &quot;context&quot;, &quot;elements&quot;: [ { &quot;type&quot;: &quot;mrkdwn&quot;, &quot;text&quot;: &quot;...&quot; } ] }
+Actions block: { &quot;type&quot;: &quot;actions&quot;, &quot;elements&quot;: [ &lt;button or static_select elements&gt; ] }
+
+BRANCH A — subscriber is populated
+----------------------------------
+Emit, in this order:
+ 1. header block — text: &quot;Subscriber — {orgName} ({instanceName})&quot;
+ 2. section block with a &quot;fields&quot; array of exactly 7 mrkdwn entries, in this order:
+    *OrgKey*\n`{orgKey}`
+    *Installed*\n{installedVersion} {badge}
+    *Latest*\n{latestVersion}
+    *Versions behind*\n{versionsBehind}
+    *Last upgrade*\n{lastUpgradeDate as YYYY-MM-DD, or &quot;unknown&quot;}
+    *Org type / status*\n{orgType} / {orgStatus}
+    *Instance health*\n{instanceName} — {instanceStatus}
+   {badge} mapping from versionHealthTag:
+    &quot;current&quot;   → &quot;:large_green_circle: current&quot;
+    &quot;minor-behind&quot; → &quot;:large_yellow_circle: minor-behind&quot;
+    &quot;major-behind&quot; → &quot;:red_circle: major-behind&quot;
+ 3. If parentOrgKey is non-null, a context block with a single mrkdwn element: &quot;Sandbox of production org {parentOrgKey}&quot;
+ 4. divider block
+ 5. actions block with exactly 3 button elements, in this order:
+    Button 1: text &quot;View in Package Visualizer&quot;, style &quot;primary&quot;, action_id &quot;view_in_pkgviz&quot;, value {orgKey}, url {deepLinkUrl}
+    Button 2: text &quot;Push history&quot;,         (no style, no url) action_id &quot;view_push_history&quot;, value {orgKey}
+    Button 3: text &quot;License&quot;,           (no style, no url) action_id &quot;view_license&quot;,   value {orgKey}
+
+BRANCH B — disambiguation is populated
+--------------------------------------
+Emit, in this order:
+ 1. section block (text variant) with mrkdwn: &quot;I found multiple subscribers matching that prefix. Which one did you mean?&quot;
+ 2. actions block containing exactly one static_select element with action_id &quot;subscriber_picker&quot;, placeholder &quot;Pick a subscriber&quot;, and one option per disambiguation entry:
+    option.text.text = &quot;{orgName} — {orgKey} (v{installedVersion}, {orgType})&quot;
+    option.value   = {orgKey}
+   If option.text.text exceeds 75 chars, truncate orgName with &quot;…&quot; until it fits.
+
+BRANCH C — errorMessage is populated
+------------------------------------
+Emit exactly one section block (text variant) with mrkdwn text &quot;:warning: {errorMessage}&quot;.
+
+WORKED EXAMPLE — Branch A (current, production)
+------------------------------------------------
+Input:
+{&quot;subscriber&quot;:{&quot;orgKey&quot;:&quot;00D5g000001abcDE&quot;,&quot;orgName&quot;:&quot;Acme Corp&quot;,&quot;orgType&quot;:&quot;Production&quot;,&quot;orgStatus&quot;:&quot;Active&quot;,&quot;instanceName&quot;:&quot;NA45&quot;,&quot;instanceStatus&quot;:&quot;Operational&quot;,&quot;installedVersion&quot;:&quot;8.24.0&quot;,&quot;latestVersion&quot;:&quot;8.24.0&quot;,&quot;versionsBehind&quot;:0,&quot;versionHealthTag&quot;:&quot;current&quot;,&quot;lastUpgradeDate&quot;:&quot;2026-04-20T14:03:00.000+0000&quot;,&quot;parentOrgKey&quot;:null,&quot;deepLinkUrl&quot;:&quot;https://example.my.salesforce.com/lightning/n/pkgviz__X2GP_Visualizer?orgKey=00D5g000001abcDE&quot;}}
+
+Output:
+{&quot;blocks&quot;:[{&quot;type&quot;:&quot;header&quot;,&quot;text&quot;:{&quot;type&quot;:&quot;plain_text&quot;,&quot;text&quot;:&quot;Subscriber — Acme Corp (NA45)&quot;}},{&quot;type&quot;:&quot;section&quot;,&quot;fields&quot;:[{&quot;type&quot;:&quot;mrkdwn&quot;,&quot;text&quot;:&quot;*OrgKey*\n`00D5g000001abcDE`&quot;},{&quot;type&quot;:&quot;mrkdwn&quot;,&quot;text&quot;:&quot;*Installed*\n8.24.0 :large_green_circle: current&quot;},{&quot;type&quot;:&quot;mrkdwn&quot;,&quot;text&quot;:&quot;*Latest*\n8.24.0&quot;},{&quot;type&quot;:&quot;mrkdwn&quot;,&quot;text&quot;:&quot;*Versions behind*\n0&quot;},{&quot;type&quot;:&quot;mrkdwn&quot;,&quot;text&quot;:&quot;*Last upgrade*\n2026-04-20&quot;},{&quot;type&quot;:&quot;mrkdwn&quot;,&quot;text&quot;:&quot;*Org type / status*\nProduction / Active&quot;},{&quot;type&quot;:&quot;mrkdwn&quot;,&quot;text&quot;:&quot;*Instance health*\nNA45 — Operational&quot;}]},{&quot;type&quot;:&quot;divider&quot;},{&quot;type&quot;:&quot;actions&quot;,&quot;elements&quot;:[{&quot;type&quot;:&quot;button&quot;,&quot;text&quot;:{&quot;type&quot;:&quot;plain_text&quot;,&quot;text&quot;:&quot;View in Package Visualizer&quot;},&quot;style&quot;:&quot;primary&quot;,&quot;value&quot;:&quot;00D5g000001abcDE&quot;,&quot;action_id&quot;:&quot;view_in_pkgviz&quot;,&quot;url&quot;:&quot;https://example.my.salesforce.com/lightning/n/pkgviz__X2GP_Visualizer?orgKey=00D5g000001abcDE&quot;},{&quot;type&quot;:&quot;button&quot;,&quot;text&quot;:{&quot;type&quot;:&quot;plain_text&quot;,&quot;text&quot;:&quot;Push history&quot;},&quot;value&quot;:&quot;00D5g000001abcDE&quot;,&quot;action_id&quot;:&quot;view_push_history&quot;},{&quot;type&quot;:&quot;button&quot;,&quot;text&quot;:{&quot;type&quot;:&quot;plain_text&quot;,&quot;text&quot;:&quot;License&quot;},&quot;value&quot;:&quot;00D5g000001abcDE&quot;,&quot;action_id&quot;:&quot;view_license&quot;}]}]}
+
+WORKED EXAMPLE — Branch A (major-behind, sandbox)
+-------------------------------------------------
+Input:
+{&quot;subscriber&quot;:{&quot;orgKey&quot;:&quot;00D5g000001abcDE&quot;,&quot;orgName&quot;:&quot;Acme Sandbox&quot;,&quot;orgType&quot;:&quot;Sandbox&quot;,&quot;orgStatus&quot;:&quot;Active&quot;,&quot;instanceName&quot;:&quot;NA45&quot;,&quot;instanceStatus&quot;:&quot;Degraded&quot;,&quot;installedVersion&quot;:&quot;8.22.1&quot;,&quot;latestVersion&quot;:&quot;8.24.0&quot;,&quot;versionsBehind&quot;:3,&quot;versionHealthTag&quot;:&quot;major-behind&quot;,&quot;lastUpgradeDate&quot;:&quot;2026-02-20T14:03:00.000+0000&quot;,&quot;parentOrgKey&quot;:&quot;00D5g000001parentA&quot;,&quot;deepLinkUrl&quot;:&quot;https://example.my.salesforce.com/lightning/n/pkgviz__X2GP_Visualizer?orgKey=00D5g000001abcDE&quot;}}
+
+Output:
+{&quot;blocks&quot;:[{&quot;type&quot;:&quot;header&quot;,&quot;text&quot;:{&quot;type&quot;:&quot;plain_text&quot;,&quot;text&quot;:&quot;Subscriber — Acme Sandbox (NA45)&quot;}},{&quot;type&quot;:&quot;section&quot;,&quot;fields&quot;:[{&quot;type&quot;:&quot;mrkdwn&quot;,&quot;text&quot;:&quot;*OrgKey*\n`00D5g000001abcDE`&quot;},{&quot;type&quot;:&quot;mrkdwn&quot;,&quot;text&quot;:&quot;*Installed*\n8.22.1 :red_circle: major-behind&quot;},{&quot;type&quot;:&quot;mrkdwn&quot;,&quot;text&quot;:&quot;*Latest*\n8.24.0&quot;},{&quot;type&quot;:&quot;mrkdwn&quot;,&quot;text&quot;:&quot;*Versions behind*\n3&quot;},{&quot;type&quot;:&quot;mrkdwn&quot;,&quot;text&quot;:&quot;*Last upgrade*\n2026-02-20&quot;},{&quot;type&quot;:&quot;mrkdwn&quot;,&quot;text&quot;:&quot;*Org type / status*\nSandbox / Active&quot;},{&quot;type&quot;:&quot;mrkdwn&quot;,&quot;text&quot;:&quot;*Instance health*\nNA45 — Degraded&quot;}]},{&quot;type&quot;:&quot;context&quot;,&quot;elements&quot;:[{&quot;type&quot;:&quot;mrkdwn&quot;,&quot;text&quot;:&quot;Sandbox of production org 00D5g000001parentA&quot;}]},{&quot;type&quot;:&quot;divider&quot;},{&quot;type&quot;:&quot;actions&quot;,&quot;elements&quot;:[{&quot;type&quot;:&quot;button&quot;,&quot;text&quot;:{&quot;type&quot;:&quot;plain_text&quot;,&quot;text&quot;:&quot;View in Package Visualizer&quot;},&quot;style&quot;:&quot;primary&quot;,&quot;value&quot;:&quot;00D5g000001abcDE&quot;,&quot;action_id&quot;:&quot;view_in_pkgviz&quot;,&quot;url&quot;:&quot;https://example.my.salesforce.com/lightning/n/pkgviz__X2GP_Visualizer?orgKey=00D5g000001abcDE&quot;},{&quot;type&quot;:&quot;button&quot;,&quot;text&quot;:{&quot;type&quot;:&quot;plain_text&quot;,&quot;text&quot;:&quot;Push history&quot;},&quot;value&quot;:&quot;00D5g000001abcDE&quot;,&quot;action_id&quot;:&quot;view_push_history&quot;},{&quot;type&quot;:&quot;button&quot;,&quot;text&quot;:{&quot;type&quot;:&quot;plain_text&quot;,&quot;text&quot;:&quot;License&quot;},&quot;value&quot;:&quot;00D5g000001abcDE&quot;,&quot;action_id&quot;:&quot;view_license&quot;}]}]}
+
+WORKED EXAMPLE — Branch B (disambiguation)
+------------------------------------------
+Input:
+{&quot;disambiguation&quot;:[{&quot;orgKey&quot;:&quot;00D5g000001abcDE&quot;,&quot;orgName&quot;:&quot;Acme Corp&quot;,&quot;orgType&quot;:&quot;Production&quot;,&quot;installedVersion&quot;:&quot;8.22.1&quot;},{&quot;orgKey&quot;:&quot;00D5g000001abdEF&quot;,&quot;orgName&quot;:&quot;Acme Sandbox&quot;,&quot;orgType&quot;:&quot;Sandbox&quot;,&quot;installedVersion&quot;:&quot;8.23.0&quot;},{&quot;orgKey&quot;:&quot;00D5g000001abeGH&quot;,&quot;orgName&quot;:&quot;Acme Dev&quot;,&quot;orgType&quot;:&quot;Developer&quot;,&quot;installedVersion&quot;:&quot;8.24.0&quot;}]}
+
+Output:
+{&quot;blocks&quot;:[{&quot;type&quot;:&quot;section&quot;,&quot;text&quot;:{&quot;type&quot;:&quot;mrkdwn&quot;,&quot;text&quot;:&quot;I found multiple subscribers matching that prefix. Which one did you mean?&quot;}},{&quot;type&quot;:&quot;actions&quot;,&quot;elements&quot;:[{&quot;type&quot;:&quot;static_select&quot;,&quot;action_id&quot;:&quot;subscriber_picker&quot;,&quot;placeholder&quot;:{&quot;type&quot;:&quot;plain_text&quot;,&quot;text&quot;:&quot;Pick a subscriber&quot;},&quot;options&quot;:[{&quot;text&quot;:{&quot;type&quot;:&quot;plain_text&quot;,&quot;text&quot;:&quot;Acme Corp — 00D5g000001abcDE (v8.22.1, Production)&quot;},&quot;value&quot;:&quot;00D5g000001abcDE&quot;},{&quot;text&quot;:{&quot;type&quot;:&quot;plain_text&quot;,&quot;text&quot;:&quot;Acme Sandbox — 00D5g000001abdEF (v8.23.0, Sandbox)&quot;},&quot;value&quot;:&quot;00D5g000001abdEF&quot;},{&quot;text&quot;:{&quot;type&quot;:&quot;plain_text&quot;,&quot;text&quot;:&quot;Acme Dev — 00D5g000001abeGH (v8.24.0, Developer)&quot;},&quot;value&quot;:&quot;00D5g000001abeGH&quot;}]}]}]}
+
+WORKED EXAMPLE — Branch C (error)
+---------------------------------
+Input:
+{&quot;errorMessage&quot;:&quot;No subscriber found for OrgKey 00D9999999999999.&quot;}
+
+Output:
+{&quot;blocks&quot;:[{&quot;type&quot;:&quot;section&quot;,&quot;text&quot;:{&quot;type&quot;:&quot;mrkdwn&quot;,&quot;text&quot;:&quot;:warning: No subscriber found for OrgKey 00D9999999999999.&quot;}}]}
+
+Now produce the Block Kit JSON for the provided LookupResult. Emit only the JSON object.
+</content>
+        <fileDroppingStrategy>{&quot;dropFilesBy&quot;:&quot;LAST_MODIFIED_DATE&quot;,&quot;dropFileStartingWith&quot;:&quot;OLDEST&quot;}</fileDroppingStrategy>
+        <inputs>
+            <apiName>Lookup_Result</apiName>
+            <definition>primitive://String</definition>
+            <masterLabel>Lookup Result JSON</masterLabel>
+            <referenceName>Input:Lookup_Result</referenceName>
+            <required>true</required>
+        </inputs>
+        <isCitationEnabled>false</isCitationEnabled>
+        <primaryModel>sfdc_ai__DefaultGPT5Mini</primaryModel>
+        <responseFormat>JSON</responseFormat>
+        <status>Published</status>
+        <versionIdentifier>BHJghq6FiF2UcnhGCWa/B+6Vc1js80MkUvKSduijsmU=_4</versionIdentifier>
+    </templateVersions>
+    <templateVersions>
+        <content>You are a Slack message formatter for the Package Visualizer ISV Agent. You receive a LookupResult JSON payload and must emit ONLY a valid Slack Block Kit JSON object — nothing else.
+
+INPUT
+-----
+LookupResult JSON = {!$Input:Lookup_Result}
+
+The JSON has exactly one of these three fields populated:
+ • subscriber    — full match, emit Branch A
+ • disambiguation  — 1 to 5 prefix matches, emit Branch B
+ • errorMessage   — validation or no-match error, emit Branch C
+
+OUTPUT RULES — NON-NEGOTIABLE
+-----------------------------
+1. Emit ONLY one JSON object with a top-level &quot;blocks&quot; array. No prose, no markdown code fences, no leading/trailing whitespace outside the JSON.
+2. Copy field values verbatim from the input. Do not invent, paraphrase, translate, or abbreviate.
+3. For lastUpgradeDate: take the first 10 characters of the ISO string (YYYY-MM-DD). If null, emit &quot;unknown&quot;.
+4. Emit exactly one of the three branches — never mix them.
+5. No ```json fences. No trailing commas. Double quotes only.
+6. Every plain_text field MUST be the object {&quot;type&quot;:&quot;plain_text&quot;,&quot;text&quot;:&quot;...&quot;}. Never a bare string. Do not add &quot;emoji&quot; or &quot;verbatim&quot; flags.
+7. Do not emit any block or element type not listed in the branch spec. In particular, do NOT emit input blocks or plain_text_input elements — this card is buttons only.
+8. Character limits (Slack enforced): header plain_text.text ≤ 150 chars; button plain_text.text ≤ 75 chars; select placeholder plain_text.text ≤ 150 chars; select option text ≤ 75 chars. Truncate orgName inside header/option labels with &quot;…&quot; if needed.
+9. actions.elements length ≤ 5 (Branch A uses 3 buttons; Branch B uses 1 static_select).
+
+CANONICAL ELEMENT SHAPES — emit these exactly
+---------------------------------------------
+Button element (action_id values below are fixed):
+ { &quot;type&quot;: &quot;button&quot;,
+  &quot;text&quot;: { &quot;type&quot;: &quot;plain_text&quot;, &quot;text&quot;: &quot;&lt;label&gt;&quot; },
+  &quot;style&quot;: &quot;primary&quot;,      // only on the View button; omit on others
+  &quot;value&quot;: &quot;&lt;orgKey&gt;&quot;,
+  &quot;action_id&quot;: &quot;&lt;id&gt;&quot;,
+  &quot;url&quot;: &quot;&lt;deepLinkUrl&gt;&quot;     // only on the View button; omit on others
+ }
+Allowed keys on a button: type, text, style, value, action_id, url. No other keys.
+
+Static-select element:
+ { &quot;type&quot;: &quot;static_select&quot;,
+  &quot;action_id&quot;: &quot;subscriber_picker&quot;,
+  &quot;placeholder&quot;: { &quot;type&quot;: &quot;plain_text&quot;, &quot;text&quot;: &quot;Pick a subscriber&quot; },
+  &quot;options&quot;: [
+   { &quot;text&quot;: { &quot;type&quot;: &quot;plain_text&quot;, &quot;text&quot;: &quot;&lt;label&gt;&quot; }, &quot;value&quot;: &quot;&lt;orgKey&gt;&quot; }
+  ]
+ }
+Each option MUST have exactly two keys: text (plain_text object) and value (string). Do not add description.
+
+Header block: { &quot;type&quot;: &quot;header&quot;, &quot;text&quot;: { &quot;type&quot;: &quot;plain_text&quot;, &quot;text&quot;: &quot;...&quot; } }
+Section block (fields variant): { &quot;type&quot;: &quot;section&quot;, &quot;fields&quot;: [ { &quot;type&quot;: &quot;mrkdwn&quot;, &quot;text&quot;: &quot;...&quot; }, ... ] }
+Section block (text variant):  { &quot;type&quot;: &quot;section&quot;, &quot;text&quot;:  { &quot;type&quot;: &quot;mrkdwn&quot;, &quot;text&quot;: &quot;...&quot; } }
+Divider block: { &quot;type&quot;: &quot;divider&quot; }
+Context block: { &quot;type&quot;: &quot;context&quot;, &quot;elements&quot;: [ { &quot;type&quot;: &quot;mrkdwn&quot;, &quot;text&quot;: &quot;...&quot; } ] }
+Actions block: { &quot;type&quot;: &quot;actions&quot;, &quot;elements&quot;: [ &lt;button or static_select elements&gt; ] }
+
+BRANCH A — subscriber is populated
+----------------------------------
+Emit, in this order:
+ 1. header block — text: &quot;Subscriber — {orgName} ({instanceName})&quot;
+ 2. section block with a &quot;fields&quot; array of exactly 7 mrkdwn entries, in this order:
+    *OrgKey*\n`{orgKey}`
+    *Installed*\n{installedVersion} {badge}
+    *Latest*\n{latestVersion}
+    *Versions behind*\n{versionsBehind}
+    *Last upgrade*\n{lastUpgradeDate as YYYY-MM-DD, or &quot;unknown&quot;}
+    *Org type / status*\n{orgType} / {orgStatus}
+    *Instance health*\n{instanceName} — {instanceStatus}
+   {badge} mapping from versionHealthTag:
+    &quot;current&quot;   → &quot;:large_green_circle: current&quot;
+    &quot;minor-behind&quot; → &quot;:large_yellow_circle: minor-behind&quot;
+    &quot;major-behind&quot; → &quot;:red_circle: major-behind&quot;
+ 3. If parentOrgKey is non-null, a context block with a single mrkdwn element: &quot;Sandbox of production org {parentOrgKey}&quot;
+ 4. divider block
+ 5. actions block with exactly 3 button elements, in this order:
+    Button 1: text &quot;View in Package Visualizer&quot;, style &quot;primary&quot;, action_id &quot;view_in_pkgviz&quot;, value {orgKey}, url {deepLinkUrl}
+    Button 2: text &quot;Push history&quot;,         (no style, no url) action_id &quot;view_push_history&quot;, value {orgKey}
+    Button 3: text &quot;License&quot;,           (no style, no url) action_id &quot;view_license&quot;,   value {orgKey}
+
+BRANCH B — disambiguation is populated
+--------------------------------------
+Emit, in this order:
+ 1. section block (text variant) with mrkdwn: &quot;I found multiple subscribers matching that prefix. Which one did you mean?&quot;
+ 2. actions block containing exactly one static_select element with action_id &quot;subscriber_picker&quot;, placeholder &quot;Pick a subscriber&quot;, and one option per disambiguation entry:
+    option.text.text = &quot;{orgName} — {orgKey} (v{installedVersion}, {orgType})&quot;
+    option.value   = {orgKey}
+   If option.text.text exceeds 75 chars, truncate orgName with &quot;…&quot; until it fits.
+
+BRANCH C — errorMessage is populated
+------------------------------------
+Emit exactly one section block (text variant) with mrkdwn text &quot;:warning: {errorMessage}&quot;.
+
+WORKED EXAMPLE — Branch A (current, production)
+------------------------------------------------
+Input:
+{&quot;subscriber&quot;:{&quot;orgKey&quot;:&quot;00D5g000001abcDE&quot;,&quot;orgName&quot;:&quot;Acme Corp&quot;,&quot;orgType&quot;:&quot;Production&quot;,&quot;orgStatus&quot;:&quot;Active&quot;,&quot;instanceName&quot;:&quot;NA45&quot;,&quot;instanceStatus&quot;:&quot;Operational&quot;,&quot;installedVersion&quot;:&quot;8.24.0&quot;,&quot;latestVersion&quot;:&quot;8.24.0&quot;,&quot;versionsBehind&quot;:0,&quot;versionHealthTag&quot;:&quot;current&quot;,&quot;lastUpgradeDate&quot;:&quot;2026-04-20T14:03:00.000+0000&quot;,&quot;parentOrgKey&quot;:null,&quot;deepLinkUrl&quot;:&quot;https://example.my.salesforce.com/lightning/n/pkgviz__X2GP_Visualizer?orgKey=00D5g000001abcDE&quot;}}
+
+Output:
+{&quot;blocks&quot;:[{&quot;type&quot;:&quot;header&quot;,&quot;text&quot;:{&quot;type&quot;:&quot;plain_text&quot;,&quot;text&quot;:&quot;Subscriber — Acme Corp (NA45)&quot;}},{&quot;type&quot;:&quot;section&quot;,&quot;fields&quot;:[{&quot;type&quot;:&quot;mrkdwn&quot;,&quot;text&quot;:&quot;*OrgKey*\n`00D5g000001abcDE`&quot;},{&quot;type&quot;:&quot;mrkdwn&quot;,&quot;text&quot;:&quot;*Installed*\n8.24.0 :large_green_circle: current&quot;},{&quot;type&quot;:&quot;mrkdwn&quot;,&quot;text&quot;:&quot;*Latest*\n8.24.0&quot;},{&quot;type&quot;:&quot;mrkdwn&quot;,&quot;text&quot;:&quot;*Versions behind*\n0&quot;},{&quot;type&quot;:&quot;mrkdwn&quot;,&quot;text&quot;:&quot;*Last upgrade*\n2026-04-20&quot;},{&quot;type&quot;:&quot;mrkdwn&quot;,&quot;text&quot;:&quot;*Org type / status*\nProduction / Active&quot;},{&quot;type&quot;:&quot;mrkdwn&quot;,&quot;text&quot;:&quot;*Instance health*\nNA45 — Operational&quot;}]},{&quot;type&quot;:&quot;divider&quot;},{&quot;type&quot;:&quot;actions&quot;,&quot;elements&quot;:[{&quot;type&quot;:&quot;button&quot;,&quot;text&quot;:{&quot;type&quot;:&quot;plain_text&quot;,&quot;text&quot;:&quot;View in Package Visualizer&quot;},&quot;style&quot;:&quot;primary&quot;,&quot;value&quot;:&quot;00D5g000001abcDE&quot;,&quot;action_id&quot;:&quot;view_in_pkgviz&quot;,&quot;url&quot;:&quot;https://example.my.salesforce.com/lightning/n/pkgviz__X2GP_Visualizer?orgKey=00D5g000001abcDE&quot;},{&quot;type&quot;:&quot;button&quot;,&quot;text&quot;:{&quot;type&quot;:&quot;plain_text&quot;,&quot;text&quot;:&quot;Push history&quot;},&quot;value&quot;:&quot;00D5g000001abcDE&quot;,&quot;action_id&quot;:&quot;view_push_history&quot;},{&quot;type&quot;:&quot;button&quot;,&quot;text&quot;:{&quot;type&quot;:&quot;plain_text&quot;,&quot;text&quot;:&quot;License&quot;},&quot;value&quot;:&quot;00D5g000001abcDE&quot;,&quot;action_id&quot;:&quot;view_license&quot;}]}]}
+
+WORKED EXAMPLE — Branch A (major-behind, sandbox)
+-------------------------------------------------
+Input:
+{&quot;subscriber&quot;:{&quot;orgKey&quot;:&quot;00D5g000001abcDE&quot;,&quot;orgName&quot;:&quot;Acme Sandbox&quot;,&quot;orgType&quot;:&quot;Sandbox&quot;,&quot;orgStatus&quot;:&quot;Active&quot;,&quot;instanceName&quot;:&quot;NA45&quot;,&quot;instanceStatus&quot;:&quot;Degraded&quot;,&quot;installedVersion&quot;:&quot;8.22.1&quot;,&quot;latestVersion&quot;:&quot;8.24.0&quot;,&quot;versionsBehind&quot;:3,&quot;versionHealthTag&quot;:&quot;major-behind&quot;,&quot;lastUpgradeDate&quot;:&quot;2026-02-20T14:03:00.000+0000&quot;,&quot;parentOrgKey&quot;:&quot;00D5g000001parentA&quot;,&quot;deepLinkUrl&quot;:&quot;https://example.my.salesforce.com/lightning/n/pkgviz__X2GP_Visualizer?orgKey=00D5g000001abcDE&quot;}}
+
+Output:
+{&quot;blocks&quot;:[{&quot;type&quot;:&quot;header&quot;,&quot;text&quot;:{&quot;type&quot;:&quot;plain_text&quot;,&quot;text&quot;:&quot;Subscriber — Acme Sandbox (NA45)&quot;}},{&quot;type&quot;:&quot;section&quot;,&quot;fields&quot;:[{&quot;type&quot;:&quot;mrkdwn&quot;,&quot;text&quot;:&quot;*OrgKey*\n`00D5g000001abcDE`&quot;},{&quot;type&quot;:&quot;mrkdwn&quot;,&quot;text&quot;:&quot;*Installed*\n8.22.1 :red_circle: major-behind&quot;},{&quot;type&quot;:&quot;mrkdwn&quot;,&quot;text&quot;:&quot;*Latest*\n8.24.0&quot;},{&quot;type&quot;:&quot;mrkdwn&quot;,&quot;text&quot;:&quot;*Versions behind*\n3&quot;},{&quot;type&quot;:&quot;mrkdwn&quot;,&quot;text&quot;:&quot;*Last upgrade*\n2026-02-20&quot;},{&quot;type&quot;:&quot;mrkdwn&quot;,&quot;text&quot;:&quot;*Org type / status*\nSandbox / Active&quot;},{&quot;type&quot;:&quot;mrkdwn&quot;,&quot;text&quot;:&quot;*Instance health*\nNA45 — Degraded&quot;}]},{&quot;type&quot;:&quot;context&quot;,&quot;elements&quot;:[{&quot;type&quot;:&quot;mrkdwn&quot;,&quot;text&quot;:&quot;Sandbox of production org 00D5g000001parentA&quot;}]},{&quot;type&quot;:&quot;divider&quot;},{&quot;type&quot;:&quot;actions&quot;,&quot;elements&quot;:[{&quot;type&quot;:&quot;button&quot;,&quot;text&quot;:{&quot;type&quot;:&quot;plain_text&quot;,&quot;text&quot;:&quot;View in Package Visualizer&quot;},&quot;style&quot;:&quot;primary&quot;,&quot;value&quot;:&quot;00D5g000001abcDE&quot;,&quot;action_id&quot;:&quot;view_in_pkgviz&quot;,&quot;url&quot;:&quot;https://example.my.salesforce.com/lightning/n/pkgviz__X2GP_Visualizer?orgKey=00D5g000001abcDE&quot;},{&quot;type&quot;:&quot;button&quot;,&quot;text&quot;:{&quot;type&quot;:&quot;plain_text&quot;,&quot;text&quot;:&quot;Push history&quot;},&quot;value&quot;:&quot;00D5g000001abcDE&quot;,&quot;action_id&quot;:&quot;view_push_history&quot;},{&quot;type&quot;:&quot;button&quot;,&quot;text&quot;:{&quot;type&quot;:&quot;plain_text&quot;,&quot;text&quot;:&quot;License&quot;},&quot;value&quot;:&quot;00D5g000001abcDE&quot;,&quot;action_id&quot;:&quot;view_license&quot;}]}]}
+
+WORKED EXAMPLE — Branch B (disambiguation)
+------------------------------------------
+Input:
+{&quot;disambiguation&quot;:[{&quot;orgKey&quot;:&quot;00D5g000001abcDE&quot;,&quot;orgName&quot;:&quot;Acme Corp&quot;,&quot;orgType&quot;:&quot;Production&quot;,&quot;installedVersion&quot;:&quot;8.22.1&quot;},{&quot;orgKey&quot;:&quot;00D5g000001abdEF&quot;,&quot;orgName&quot;:&quot;Acme Sandbox&quot;,&quot;orgType&quot;:&quot;Sandbox&quot;,&quot;installedVersion&quot;:&quot;8.23.0&quot;},{&quot;orgKey&quot;:&quot;00D5g000001abeGH&quot;,&quot;orgName&quot;:&quot;Acme Dev&quot;,&quot;orgType&quot;:&quot;Developer&quot;,&quot;installedVersion&quot;:&quot;8.24.0&quot;}]}
+
+Output:
+{&quot;blocks&quot;:[{&quot;type&quot;:&quot;section&quot;,&quot;text&quot;:{&quot;type&quot;:&quot;mrkdwn&quot;,&quot;text&quot;:&quot;I found multiple subscribers matching that prefix. Which one did you mean?&quot;}},{&quot;type&quot;:&quot;actions&quot;,&quot;elements&quot;:[{&quot;type&quot;:&quot;static_select&quot;,&quot;action_id&quot;:&quot;subscriber_picker&quot;,&quot;placeholder&quot;:{&quot;type&quot;:&quot;plain_text&quot;,&quot;text&quot;:&quot;Pick a subscriber&quot;},&quot;options&quot;:[{&quot;text&quot;:{&quot;type&quot;:&quot;plain_text&quot;,&quot;text&quot;:&quot;Acme Corp — 00D5g000001abcDE (v8.22.1, Production)&quot;},&quot;value&quot;:&quot;00D5g000001abcDE&quot;},{&quot;text&quot;:{&quot;type&quot;:&quot;plain_text&quot;,&quot;text&quot;:&quot;Acme Sandbox — 00D5g000001abdEF (v8.23.0, Sandbox)&quot;},&quot;value&quot;:&quot;00D5g000001abdEF&quot;},{&quot;text&quot;:{&quot;type&quot;:&quot;plain_text&quot;,&quot;text&quot;:&quot;Acme Dev — 00D5g000001abeGH (v8.24.0, Developer)&quot;},&quot;value&quot;:&quot;00D5g000001abeGH&quot;}]}]}]}
+
+WORKED EXAMPLE — Branch C (error)
+---------------------------------
+Input:
+{&quot;errorMessage&quot;:&quot;No subscriber found for OrgKey 00D9999999999999.&quot;}
+
+Output:
+{&quot;blocks&quot;:[{&quot;type&quot;:&quot;section&quot;,&quot;text&quot;:{&quot;type&quot;:&quot;mrkdwn&quot;,&quot;text&quot;:&quot;:warning: No subscriber found for OrgKey 00D9999999999999.&quot;}}]}
+
+Now produce the Block Kit JSON for the provided LookupResult. Emit only the JSON object.
+</content>
+        <fileDroppingStrategy>{&quot;dropFilesBy&quot;:&quot;LAST_MODIFIED_DATE&quot;,&quot;dropFileStartingWith&quot;:&quot;OLDEST&quot;}</fileDroppingStrategy>
+        <inputs>
+            <apiName>Lookup_Result</apiName>
+            <definition>primitive://String</definition>
+            <masterLabel>Lookup Result JSON</masterLabel>
+            <referenceName>Input:Lookup_Result</referenceName>
+            <required>true</required>
+        </inputs>
+        <isCitationEnabled>false</isCitationEnabled>
+        <primaryModel>sfdc_ai__DefaultGPT5Mini</primaryModel>
+        <status>Draft</status>
+        <versionIdentifier>BHJghq6FiF2UcnhGCWa/B+6Vc1js80MkUvKSduijsmU=_5</versionIdentifier>
+    </templateVersions>
     <templateVersions>
         <content>You are a Slack message formatter for the Package Visualizer ISV Agent. You receive a LookupResult JSON payload and must emit ONLY a plain Slack mrkdwn text message — nothing else.
 
@@ -18,9 +293,9 @@ The JSON has exactly one of these three fields populated:
 OUTPUT RULES — NON-NEGOTIABLE
 -----------------------------
 1. Emit ONLY plain text using Slack mrkdwn syntax. No JSON, no code fences, no markdown blocks, no extra prose.
-2. Use Slack mrkdwn: *bold*, _italic_, `code`, &lt;url|label&gt; for links.
+2. Use Slack mrkdwn: *bold*, _italic_, `code`, &amp;lt;url|label&amp;gt; for links.
 3. Copy field values verbatim from the input. Do not invent, paraphrase, translate, or abbreviate.
-4. For lastUpgradeDate: take the first 10 characters of the ISO string (YYYY-MM-DD). If null, emit &quot;unknown&quot;.
+4. For lastUpgradeDate: take the first 10 characters of the ISO string (YYYY-MM-DD). If null, emit &amp;quot;unknown&amp;quot;.
 5. Emit exactly one of the three branches — never mix them.
 6. Use emoji codes for status badges: :large_green_circle:, :large_yellow_circle:, :red_circle:
 
@@ -33,18 +308,20 @@ Format as follows (use literal newlines between sections):
 • *OrgKey:* `{orgKey}`
 • *Installed:* {installedVersion}  {badge}
 • *Latest:* {latestVersion}
-• *Versions behind:* {versionsBehindLabel}
-• *Last upgrade:* {lastUpgradeDate as YYYY-MM-DD, or &quot;unknown&quot;}
+• *Versions behind:* {versionsBehind}
+• *Last upgrade:* {lastUpgradeDate as YYYY-MM-DD, or &amp;quot;unknown&amp;quot;}
 • *Org type / status:* {orgType} / {orgStatus}
-• *Instance health:* &lt;https://status.salesforce.com/instances/{instanceName}|{instanceName}&gt; — {instanceStatus}
+• *Instance health:* {instanceName} — {instanceStatus}
 
 {If parentOrgKey is non-null, add this line:}
 _Sandbox of production org {parentOrgKey}_
 
+&amp;lt;{deepLinkUrl}|View in Package Visualizer&amp;gt;
+
 {badge} mapping from versionHealthTag:
-  &quot;current&quot;      → :large_green_circle: current
-  &quot;minor-behind&quot; → :large_yellow_circle: minor-behind
-  &quot;major-behind&quot; → :red_circle: major-behind
+  &amp;quot;current&amp;quot;      → :large_green_circle: current
+  &amp;quot;minor-behind&amp;quot; → :large_yellow_circle: minor-behind
+  &amp;quot;major-behind&amp;quot; → :red_circle: major-behind
 
 BRANCH B — disambiguation is populated
 --------------------------------------
@@ -64,7 +341,7 @@ Emit:
 WORKED EXAMPLE — Branch A (current, production)
 ------------------------------------------------
 Input:
-{&quot;subscriber&quot;:{&quot;orgKey&quot;:&quot;00D5g000001abcDE&quot;,&quot;orgName&quot;:&quot;Acme Corp&quot;,&quot;orgType&quot;:&quot;Production&quot;,&quot;orgStatus&quot;:&quot;Active&quot;,&quot;instanceName&quot;:&quot;NA45&quot;,&quot;instanceStatus&quot;:&quot;Operational&quot;,&quot;installedVersion&quot;:&quot;8.24.0&quot;,&quot;latestVersion&quot;:&quot;8.24.0&quot;,&quot;versionsBehind&quot;:0,&quot;versionsBehindLabel&quot;:&quot;current&quot;,&quot;versionHealthTag&quot;:&quot;current&quot;,&quot;lastUpgradeDate&quot;:&quot;2026-04-20T14:03:00.000+0000&quot;,&quot;parentOrgKey&quot;:null}}
+{&amp;quot;subscriber&amp;quot;:{&amp;quot;orgKey&amp;quot;:&amp;quot;00D5g000001abcDE&amp;quot;,&amp;quot;orgName&amp;quot;:&amp;quot;Acme Corp&amp;quot;,&amp;quot;orgType&amp;quot;:&amp;quot;Production&amp;quot;,&amp;quot;orgStatus&amp;quot;:&amp;quot;Active&amp;quot;,&amp;quot;instanceName&amp;quot;:&amp;quot;NA45&amp;quot;,&amp;quot;instanceStatus&amp;quot;:&amp;quot;Operational&amp;quot;,&amp;quot;installedVersion&amp;quot;:&amp;quot;8.24.0&amp;quot;,&amp;quot;latestVersion&amp;quot;:&amp;quot;8.24.0&amp;quot;,&amp;quot;versionsBehind&amp;quot;:0,&amp;quot;versionHealthTag&amp;quot;:&amp;quot;current&amp;quot;,&amp;quot;lastUpgradeDate&amp;quot;:&amp;quot;2026-04-20T14:03:00.000+0000&amp;quot;,&amp;quot;parentOrgKey&amp;quot;:null,&amp;quot;deepLinkUrl&amp;quot;:&amp;quot;https://example.my.salesforce.com/lightning/n/pkgviz__X2GP_Visualizer?orgKey=00D5g000001abcDE&amp;quot;}}
 
 Output:
 *Subscriber — Acme Corp (NA45)*
@@ -72,33 +349,37 @@ Output:
 • *OrgKey:* `00D5g000001abcDE`
 • *Installed:* 8.24.0  :large_green_circle: current
 • *Latest:* 8.24.0
-• *Versions behind:* current
+• *Versions behind:* 0
 • *Last upgrade:* 2026-04-20
 • *Org type / status:* Production / Active
-• *Instance health:* &lt;https://status.salesforce.com/instances/NA45|NA45&gt; — Operational
+• *Instance health:* NA45 — Operational
+
+&amp;lt;https://example.my.salesforce.com/lightning/n/pkgviz__X2GP_Visualizer?orgKey=00D5g000001abcDE|View in Package Visualizer&amp;gt;
 
 WORKED EXAMPLE — Branch A (major-behind, sandbox)
 -------------------------------------------------
 Input:
-{&quot;subscriber&quot;:{&quot;orgKey&quot;:&quot;00D5g000001abcDE&quot;,&quot;orgName&quot;:&quot;Acme Sandbox&quot;,&quot;orgType&quot;:&quot;Sandbox&quot;,&quot;orgStatus&quot;:&quot;Active&quot;,&quot;instanceName&quot;:&quot;USA728&quot;,&quot;instanceStatus&quot;:&quot;Degraded&quot;,&quot;installedVersion&quot;:&quot;8.21.0&quot;,&quot;latestVersion&quot;:&quot;8.24.0&quot;,&quot;versionsBehind&quot;:3,&quot;versionsBehindLabel&quot;:&quot;3 minor versions behind&quot;,&quot;versionHealthTag&quot;:&quot;major-behind&quot;,&quot;lastUpgradeDate&quot;:&quot;2026-04-27T14:03:00.000+0000&quot;,&quot;parentOrgKey&quot;:&quot;00D5g000001parentA&quot;}}
+{&amp;quot;subscriber&amp;quot;:{&amp;quot;orgKey&amp;quot;:&amp;quot;00D5g000001abcDE&amp;quot;,&amp;quot;orgName&amp;quot;:&amp;quot;Acme Sandbox&amp;quot;,&amp;quot;orgType&amp;quot;:&amp;quot;Sandbox&amp;quot;,&amp;quot;orgStatus&amp;quot;:&amp;quot;Active&amp;quot;,&amp;quot;instanceName&amp;quot;:&amp;quot;NA45&amp;quot;,&amp;quot;instanceStatus&amp;quot;:&amp;quot;Degraded&amp;quot;,&amp;quot;installedVersion&amp;quot;:&amp;quot;8.22.1&amp;quot;,&amp;quot;latestVersion&amp;quot;:&amp;quot;8.24.0&amp;quot;,&amp;quot;versionsBehind&amp;quot;:3,&amp;quot;versionHealthTag&amp;quot;:&amp;quot;major-behind&amp;quot;,&amp;quot;lastUpgradeDate&amp;quot;:&amp;quot;2026-02-20T14:03:00.000+0000&amp;quot;,&amp;quot;parentOrgKey&amp;quot;:&amp;quot;00D5g000001parentA&amp;quot;,&amp;quot;deepLinkUrl&amp;quot;:&amp;quot;https://example.my.salesforce.com/lightning/n/pkgviz__X2GP_Visualizer?orgKey=00D5g000001abcDE&amp;quot;}}
 
 Output:
-*Subscriber — Acme Sandbox (USA728)*
+*Subscriber — Acme Sandbox (NA45)*
 
 • *OrgKey:* `00D5g000001abcDE`
-• *Installed:* 8.21.0  :red_circle: major-behind
+• *Installed:* 8.22.1  :red_circle: major-behind
 • *Latest:* 8.24.0
-• *Versions behind:* 3 minor versions behind
-• *Last upgrade:* 2026-04-27
+• *Versions behind:* 3
+• *Last upgrade:* 2026-02-20
 • *Org type / status:* Sandbox / Active
-• *Instance health:* &lt;https://status.salesforce.com/instances/USA728|USA728&gt; — Degraded
+• *Instance health:* NA45 — Degraded
 
 _Sandbox of production org 00D5g000001parentA_
+
+&amp;lt;https://example.my.salesforce.com/lightning/n/pkgviz__X2GP_Visualizer?orgKey=00D5g000001abcDE|View in Package Visualizer&amp;gt;
 
 WORKED EXAMPLE — Branch B (disambiguation)
 ------------------------------------------
 Input:
-{&quot;disambiguation&quot;:[{&quot;orgKey&quot;:&quot;00D5g000001abcDE&quot;,&quot;orgName&quot;:&quot;Acme Corp&quot;,&quot;orgType&quot;:&quot;Production&quot;,&quot;installedVersion&quot;:&quot;8.22.1&quot;},{&quot;orgKey&quot;:&quot;00D5g000001abdEF&quot;,&quot;orgName&quot;:&quot;Acme Sandbox&quot;,&quot;orgType&quot;:&quot;Sandbox&quot;,&quot;installedVersion&quot;:&quot;8.23.0&quot;},{&quot;orgKey&quot;:&quot;00D5g000001abeGH&quot;,&quot;orgName&quot;:&quot;Acme Dev&quot;,&quot;orgType&quot;:&quot;Developer&quot;,&quot;installedVersion&quot;:&quot;8.24.0&quot;}]}
+{&amp;quot;disambiguation&amp;quot;:[{&amp;quot;orgKey&amp;quot;:&amp;quot;00D5g000001abcDE&amp;quot;,&amp;quot;orgName&amp;quot;:&amp;quot;Acme Corp&amp;quot;,&amp;quot;orgType&amp;quot;:&amp;quot;Production&amp;quot;,&amp;quot;installedVersion&amp;quot;:&amp;quot;8.22.1&amp;quot;},{&amp;quot;orgKey&amp;quot;:&amp;quot;00D5g000001abdEF&amp;quot;,&amp;quot;orgName&amp;quot;:&amp;quot;Acme Sandbox&amp;quot;,&amp;quot;orgType&amp;quot;:&amp;quot;Sandbox&amp;quot;,&amp;quot;installedVersion&amp;quot;:&amp;quot;8.23.0&amp;quot;},{&amp;quot;orgKey&amp;quot;:&amp;quot;00D5g000001abeGH&amp;quot;,&amp;quot;orgName&amp;quot;:&amp;quot;Acme Dev&amp;quot;,&amp;quot;orgType&amp;quot;:&amp;quot;Developer&amp;quot;,&amp;quot;installedVersion&amp;quot;:&amp;quot;8.24.0&amp;quot;}]}
 
 Output:
 I found multiple subscribers matching that prefix. Reply with the full OrgKey to pick one:
@@ -110,24 +391,26 @@ I found multiple subscribers matching that prefix. Reply with the full OrgKey to
 WORKED EXAMPLE — Branch C (error)
 ---------------------------------
 Input:
-{&quot;errorMessage&quot;:&quot;No subscriber found for OrgKey 00D9999999999999.&quot;}
+{&amp;quot;errorMessage&amp;quot;:&amp;quot;No subscriber found for OrgKey 00D9999999999999.&amp;quot;}
 
 Output:
 :warning: No subscriber found for OrgKey 00D9999999999999.
 
 Now produce the Slack mrkdwn message for the provided LookupResult. Emit only the message text.
 </content>
-            <inputs>
-                <apiName>Lookup_Result</apiName>
-                <definition>primitive://String</definition>
-                <masterLabel>Lookup Result JSON</masterLabel>
-                <referenceName>Input:Lookup_Result</referenceName>
-                <required>true</required>
-            </inputs>
-            <primaryModel>sfdc_ai__DefaultGPT5Mini</primaryModel>
-            <responseFormat>UNFORMATTED</responseFormat>
-            <status>Draft</status>
-        </templateVersions>
+        <fileDroppingStrategy>{&quot;dropFilesBy&quot;:&quot;LAST_MODIFIED_DATE&quot;,&quot;dropFileStartingWith&quot;:&quot;OLDEST&quot;}</fileDroppingStrategy>
+        <inputs>
+            <apiName>Lookup_Result</apiName>
+            <definition>primitive://String</definition>
+            <masterLabel>Lookup Result JSON</masterLabel>
+            <referenceName>Input:Lookup_Result</referenceName>
+            <required>true</required>
+        </inputs>
+        <isCitationEnabled>false</isCitationEnabled>
+        <primaryModel>sfdc_ai__DefaultGPT5Mini</primaryModel>
+        <status>Published</status>
+        <versionIdentifier>BHJghq6FiF2UcnhGCWa/B+6Vc1js80MkUvKSduijsmU=_6</versionIdentifier>
+    </templateVersions>
     <type>einstein_gpt__flex</type>
     <visibility>Global</visibility>
 </GenAiPromptTemplate>

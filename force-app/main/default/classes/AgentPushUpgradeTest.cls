@@ -1,66 +1,36 @@
 @IsTest
 private class AgentPushUpgradeTest {
 
-    private static final String ORG_KEY           = '00D5g000001abcDE';
+    private static final String ORG_KEY           = '00D5g000001abcDEFG';
     private static final String PKG_ID            = '0335g000000AaaaAAA';
     private static final String INSTALLED_VER_ID  = '04t5g000000Vvv1AAC';
     private static final String LATEST_VER_ID     = '04t5g000000Vvv4AAC';
 
-    private class Mock implements HttpCalloutMock {
-        Map<String, HttpResponse> byContains = new Map<String, HttpResponse>();
-
-        Mock when(String fragment, Integer status, String body) {
-            HttpResponse res = new HttpResponse();
-            res.setStatusCode(status);
-            res.setHeader('Content-Type', 'application/json');
-            res.setBody(body);
-            byContains.put(fragment, res);
-            return this;
-        }
-
-        public HttpResponse respond(HttpRequest req) {
-            String endpoint = req.getEndpoint();
-            for (String fragment : byContains.keySet()) {
-                if (endpoint.contains(fragment)) return byContains.get(fragment);
-            }
-            HttpResponse empty = new HttpResponse();
-            empty.setStatusCode(200);
-            empty.setHeader('Content-Type', 'application/json');
-            empty.setBody('{"records":[]}');
-            return empty;
-        }
+    private static ObjectWrappers.PackageSubscriberWrapper subscriber(String versionId) {
+        ObjectWrappers.PackageSubscriberWrapper s = new ObjectWrappers.PackageSubscriberWrapper();
+        s.id                       = '1235g000000AaaaAAA';
+        s.orgKey                   = ORG_KEY;
+        s.orgName                  = 'Acme Corp';
+        s.orgType                  = 'Production';
+        s.orgStatus                = 'Active';
+        s.instanceName             = 'NA45';
+        s.parentOrg                = null;
+        s.metadataPackageId        = PKG_ID;
+        s.metadataPackageVersionId = versionId;
+        s.SystemModstamp           = Datetime.newInstanceGmt(2026, 2, 20, 14, 3, 0);
+        return s;
     }
 
-    private static String subscriberRow(String versionId) {
-        return '{"records":[{'
-            + '"Id":"1235g000000AaaaAAA",'
-            + '"OrgKey":"' + ORG_KEY + '",'
-            + '"OrgName":"Acme Corp",'
-            + '"OrgType":"Production",'
-            + '"OrgStatus":"Active",'
-            + '"InstanceName":"NA45",'
-            + '"ParentOrg":null,'
-            + '"MetadataPackageId":"' + PKG_ID + '",'
-            + '"MetadataPackageVersionId":"' + versionId + '",'
-            + '"SystemModstamp":"2026-02-20T14:03:00.000+0000"'
-            + '}]}';
-    }
-
-    private static String versionRow(String id, Integer major, Integer minor, Integer patch) {
-        return '{"records":[{'
-            + '"Id":"05i5g000000AbcdAAC",'
-            + '"SubscriberPackageVersionId":"' + id + '",'
-            + '"Package2Id":"' + PKG_ID + '",'
-            + '"MajorVersion":' + major + ',"MinorVersion":' + minor + ',"PatchVersion":' + patch + ',"BuildNumber":1,'
-            + '"IsReleased":true,"CreatedDate":"2026-04-20T00:00:00.000+0000"'
-            + '}]}';
-    }
-
-    private static String latestIds(String firstId) {
-        return '{"records":[{'
-            + '"SubscriberPackageVersionId":"' + firstId + '",'
-            + '"MajorVersion":8,"MinorVersion":24,"PatchVersion":0,"BuildNumber":1'
-            + '}]}';
+    private static ObjectWrappers.PackageVersionWrapper version(String id, Integer major, Integer minor, Integer patch) {
+        ObjectWrappers.PackageVersionWrapper v = new ObjectWrappers.PackageVersionWrapper();
+        v.subscriberPackageVersionId = id;
+        v.package2Id                 = PKG_ID;
+        v.majorVersion               = major;
+        v.minorVersion               = minor;
+        v.patchVersion               = patch;
+        v.buildNumber                = 1;
+        v.isReleased                 = true;
+        return v;
     }
 
     private static AgentSubscriberWrappers.PushResult parse(AgentPushUpgrade.PushResponse resp) {
@@ -84,8 +54,9 @@ private class AgentPushUpgradeTest {
 
     @IsTest
     static void testSubscriberNotFound() {
-        Mock m = new Mock().when('PackageSubscriber', 200, '{"records":[]}');
-        Test.setMock(HttpCalloutMock.class, m);
+        // Inject an empty subscriber list so findSubscriber returns null, bypassing any real
+        // PackageSubscriber data that lives in the packaging org.
+        AgentPushUpgrade.mockSubscribers = new List<ObjectWrappers.PackageSubscriberWrapper>();
 
         AgentPushUpgrade.PushRequest req = new AgentPushUpgrade.PushRequest();
         req.orgKey = ORG_KEY;
@@ -102,11 +73,13 @@ private class AgentPushUpgradeTest {
 
     @IsTest
     static void testAlreadyOnLatest() {
-        Mock m = new Mock()
-            .when('PackageSubscriber+WHERE+OrgKey', 200, subscriberRow(LATEST_VER_ID))
-            .when('SubscriberPackageVersionId+%3D+%27' + LATEST_VER_ID + '%27', 200, versionRow(LATEST_VER_ID, 8, 24, 0))
-            .when('Package2Id+%3D+%27' + PKG_ID + '%27', 200, latestIds(LATEST_VER_ID));
-        Test.setMock(HttpCalloutMock.class, m);
+        AgentPushUpgrade.mockSubscribers = new List<ObjectWrappers.PackageSubscriberWrapper>{
+            subscriber(LATEST_VER_ID)
+        };
+        AgentPushUpgrade.mockVersions = new List<ObjectWrappers.PackageVersionWrapper>{
+            version(LATEST_VER_ID, 8, 24, 0)
+        };
+        AgentPushUpgrade.mockLatestVersionIds = new List<String>{ LATEST_VER_ID };
 
         AgentPushUpgrade.PushRequest req = new AgentPushUpgrade.PushRequest();
         req.orgKey = ORG_KEY;
@@ -123,14 +96,16 @@ private class AgentPushUpgradeTest {
     }
 
     @IsTest
-    static void testSecurityReviewError() {
-        Mock m = new Mock()
-            .when('PackageSubscriber+WHERE+OrgKey', 200, subscriberRow(INSTALLED_VER_ID))
-            .when('SubscriberPackageVersionId+%3D+%27' + INSTALLED_VER_ID + '%27', 200, versionRow(INSTALLED_VER_ID, 8, 21, 0))
-            .when('SubscriberPackageVersionId+%3D+%27' + LATEST_VER_ID + '%27', 200, versionRow(LATEST_VER_ID, 8, 24, 0))
-            .when('Package2Id+%3D+%27' + PKG_ID + '%27', 200, latestIds(LATEST_VER_ID))
-            .when('sobjects/PackagePushRequest', 400, '{Specify a package that has passed the AppExchange security review.}');
-        Test.setMock(HttpCalloutMock.class, m);
+    static void testSuccessfulPush() {
+        AgentPushUpgrade.mockSubscribers = new List<ObjectWrappers.PackageSubscriberWrapper>{
+            subscriber(INSTALLED_VER_ID)
+        };
+        AgentPushUpgrade.mockVersions = new List<ObjectWrappers.PackageVersionWrapper>{
+            version(INSTALLED_VER_ID, 8, 21, 0),
+            version(LATEST_VER_ID,    8, 24, 0)
+        };
+        AgentPushUpgrade.mockLatestVersionIds = new List<String>{ LATEST_VER_ID };
+        AgentPushUpgrade.mockPushRequestId = '0DV5g000000AbcdEFG';
 
         AgentPushUpgrade.PushRequest req = new AgentPushUpgrade.PushRequest();
         req.orgKey = ORG_KEY;
@@ -141,8 +116,10 @@ private class AgentPushUpgradeTest {
         Test.stopTest();
 
         AgentSubscriberWrappers.PushResult r = parse(responses[0]);
-        System.assertEquals(false, r.success);
-        System.assertNotEquals(null, r.errorMessage);
+        System.assertEquals(true, r.success);
+        System.assertEquals('0DV5g000000AbcdEFG', r.pushRequestId);
+        System.assertEquals('8.21.0', r.fromVersion);
+        System.assertEquals('8.24.0', r.targetVersion);
     }
 
     @IsTest

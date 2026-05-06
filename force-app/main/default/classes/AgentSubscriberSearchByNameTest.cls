@@ -1,32 +1,19 @@
 @IsTest
 private class AgentSubscriberSearchByNameTest {
 
-    private class Mock implements HttpCalloutMock {
-        String body;
-        Integer status;
-        Mock(Integer s, String b) { this.status = s; this.body = b; }
-        public HttpResponse respond(HttpRequest req) {
-            HttpResponse res = new HttpResponse();
-            res.setStatusCode(status);
-            res.setHeader('Content-Type', 'application/json');
-            res.setBody(body);
-            return res;
-        }
-    }
-
-    private static String subscriberRow(String orgKey, String orgName, String orgType, String orgStatus, String parent) {
-        return '{'
-            + '"Id":"1235g000000AaaaAAA",'
-            + '"OrgKey":"' + orgKey + '",'
-            + '"OrgName":"' + orgName + '",'
-            + '"OrgType":"' + orgType + '",'
-            + '"OrgStatus":"' + orgStatus + '",'
-            + '"InstanceName":"NA45",'
-            + '"ParentOrg":' + (parent == null ? 'null' : '"' + parent + '"') + ','
-            + '"MetadataPackageId":"0335g000000AaaaAAA",'
-            + '"MetadataPackageVersionId":"04t5g000000Vvv1AAC",'
-            + '"SystemModstamp":"2026-02-20T14:03:00.000+0000"'
-            + '}';
+    private static ObjectWrappers.PackageSubscriberWrapper subscriber(String orgKey, String orgName, String orgType, String orgStatus, String parent) {
+        ObjectWrappers.PackageSubscriberWrapper s = new ObjectWrappers.PackageSubscriberWrapper();
+        s.id                       = '1235g000000AaaaAAA';
+        s.orgKey                   = orgKey;
+        s.orgName                  = orgName;
+        s.orgType                  = orgType;
+        s.orgStatus                = orgStatus;
+        s.instanceName             = 'NA45';
+        s.parentOrg                = parent;
+        s.metadataPackageId        = '0335g000000AaaaAAA';
+        s.metadataPackageVersionId = '04t5g000000Vvv1AAC';
+        s.SystemModstamp           = Datetime.newInstanceGmt(2026, 2, 20, 14, 3, 0);
+        return s;
     }
 
     private static AgentSubscriberWrappers.SearchResult parse(AgentSubscriberSearchByName.SearchResponse resp) {
@@ -60,7 +47,7 @@ private class AgentSubscriberSearchByNameTest {
 
     @IsTest
     static void testNoMatches() {
-        Test.setMock(HttpCalloutMock.class, new Mock(200, '{"records":[]}'));
+        AgentSubscriberSearchByName.mockSubscribers = new List<ObjectWrappers.PackageSubscriberWrapper>();
 
         AgentSubscriberSearchByName.SearchRequest req = new AgentSubscriberSearchByName.SearchRequest();
         req.orgName = 'Databook';
@@ -77,13 +64,12 @@ private class AgentSubscriberSearchByNameTest {
     @IsTest
     static void testGroupingProductionAndSandboxes() {
         String prodKey = '00D5g000001prod01';
-        String body = '{"records":['
-            + subscriberRow(prodKey, 'Acme Corp', 'Production', 'Active', null) + ','
-            + subscriberRow('00D5g000001sbx001', 'Acme UAT', 'Sandbox', 'Active', prodKey) + ','
-            + subscriberRow('00D5g000001sbx002', 'Acme DEV', 'Sandbox', 'Active', prodKey) + ','
-            + subscriberRow('00D5g000001orph99', 'Orphan Sandbox', 'Sandbox', 'Active', '00D5g000001missed')
-            + ']}';
-        Test.setMock(HttpCalloutMock.class, new Mock(200, body));
+        AgentSubscriberSearchByName.mockSubscribers = new List<ObjectWrappers.PackageSubscriberWrapper>{
+            subscriber(prodKey, 'Acme Corp', 'Production', 'Active', null),
+            subscriber('00D5g000001sbx001', 'Acme UAT', 'Sandbox', 'Active', prodKey),
+            subscriber('00D5g000001sbx002', 'Acme DEV', 'Sandbox', 'Active', prodKey),
+            subscriber('00D5g000001orph99', 'Orphan Sandbox', 'Sandbox', 'Active', '00D5g000001missed')
+        };
 
         AgentSubscriberSearchByName.SearchRequest req = new AgentSubscriberSearchByName.SearchRequest();
         req.orgName = 'Acme';
@@ -104,12 +90,12 @@ private class AgentSubscriberSearchByNameTest {
     @IsTest
     static void testSandboxCapAtFive() {
         String prodKey = '00D5g000001prod01';
-        List<String> rows = new List<String>();
-        rows.add(subscriberRow(prodKey, 'Big Co', 'Production', 'Active', null));
+        List<ObjectWrappers.PackageSubscriberWrapper> rows = new List<ObjectWrappers.PackageSubscriberWrapper>();
+        rows.add(subscriber(prodKey, 'Big Co', 'Production', 'Active', null));
         for (Integer i = 0; i < 7; i++) {
-            rows.add(subscriberRow('00D5g000001sbx00' + i, 'Big Co Sbx ' + i, 'Sandbox', 'Active', prodKey));
+            rows.add(subscriber('00D5g000001sbx00' + i, 'Big Co Sbx ' + i, 'Sandbox', 'Active', prodKey));
         }
-        Test.setMock(HttpCalloutMock.class, new Mock(200, '{"records":[' + String.join(rows, ',') + ']}'));
+        AgentSubscriberSearchByName.mockSubscribers = rows;
 
         AgentSubscriberSearchByName.SearchRequest req = new AgentSubscriberSearchByName.SearchRequest();
         req.orgName = 'Big Co';
@@ -125,11 +111,11 @@ private class AgentSubscriberSearchByNameTest {
 
     @IsTest
     static void testProductionCapAtFive() {
-        List<String> rows = new List<String>();
+        List<ObjectWrappers.PackageSubscriberWrapper> rows = new List<ObjectWrappers.PackageSubscriberWrapper>();
         for (Integer i = 0; i < 7; i++) {
-            rows.add(subscriberRow('00D5g00000' + i + 'prod01', 'Prod ' + i, 'Production', 'Active', null));
+            rows.add(subscriber('00D5g00000' + i + 'prod01', 'Prod ' + i, 'Production', 'Active', null));
         }
-        Test.setMock(HttpCalloutMock.class, new Mock(200, '{"records":[' + String.join(rows, ',') + ']}'));
+        AgentSubscriberSearchByName.mockSubscribers = rows;
 
         AgentSubscriberSearchByName.SearchRequest req = new AgentSubscriberSearchByName.SearchRequest();
         req.orgName = 'Prod';

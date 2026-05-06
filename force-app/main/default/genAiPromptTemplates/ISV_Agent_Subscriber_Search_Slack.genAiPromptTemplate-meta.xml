@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <GenAiPromptTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <activeVersionIdentifier>BHJghq6FiF2UcnhGCWa/B+6Vc1js80MkUvKSduijsmU=_1</activeVersionIdentifier>
     <description>Formats the AgentSubscriberSearchByName SearchResult JSON into a Slack mrkdwn list, grouping productions with nested sandboxes.</description>
     <developerName>ISV_Agent_Subscriber_Search_Slack</developerName>
     <masterLabel>ISV Agent Subscriber Search (Slack)</masterLabel>
+    <overridable>false</overridable>
     <templateVersions>
         <content>You are a Slack message formatter for the Package Visualizer ISV Agent. You receive a SearchResult JSON payload and must emit ONLY a plain Slack mrkdwn text message — nothing else.
 
@@ -89,16 +91,18 @@ Output:
 
 Now produce the Slack mrkdwn message for the provided SearchResult. Emit only the message text.
 </content>
-            <inputs>
-                <apiName>Search_Result</apiName>
-                <definition>primitive://String</definition>
-                <masterLabel>Search Result JSON</masterLabel>
-                <referenceName>Input:Search_Result</referenceName>
-                <required>true</required>
-            </inputs>
-            <primaryModel>sfdc_ai__DefaultGPT5Mini</primaryModel>
-            <status>Draft</status>
-        </templateVersions>
+        <inputs>
+            <apiName>Search_Result</apiName>
+            <definition>primitive://String</definition>
+            <masterLabel>Search Result JSON</masterLabel>
+            <referenceName>Input:Search_Result</referenceName>
+            <required>true</required>
+        </inputs>
+        <isCitationEnabled>false</isCitationEnabled>
+        <primaryModel>sfdc_ai__DefaultGPT5Mini</primaryModel>
+        <status>Published</status>
+        <versionIdentifier>BHJghq6FiF2UcnhGCWa/B+6Vc1js80MkUvKSduijsmU=_1</versionIdentifier>
+    </templateVersions>
     <type>einstein_gpt__flex</type>
     <visibility>Global</visibility>
 </GenAiPromptTemplate>

@@ -1,6 +1,11 @@
 @JsonAccess(serializable='always' deserializable='always')
 global with sharing class AgentPushUpgrade {
 
+    @TestVisible private static List<ObjectWrappers.PackageSubscriberWrapper> mockSubscribers;
+    @TestVisible private static List<ObjectWrappers.PackageVersionWrapper> mockVersions;
+    @TestVisible private static List<String> mockLatestVersionIds;
+    @TestVisible private static String mockPushRequestId;
+
     @InvocableMethod(
         label='Push Upgrade to Latest Version'
         description='Schedules an immediate push upgrade of the subscriber identified by OrgKey to the latest released package version.'
@@ -67,7 +72,9 @@ global with sharing class AgentPushUpgrade {
         }
         r.fromVersion = formatVersion(installed);
 
-        List<String> latestIds = Package2Interface.getLatestPackageVersionsList(installed.package2Id, '1');
+        List<String> latestIds = (mockLatestVersionIds != null)
+            ? mockLatestVersionIds
+            : Package2Interface.getLatestPackageVersionsList(installed.package2Id, '1');
         if (latestIds == null || latestIds.isEmpty()) {
             r.errorMessage = 'No released versions are available for this package.';
             return r;
@@ -84,10 +91,15 @@ global with sharing class AgentPushUpgrade {
         if (target != null) r.targetVersion = formatVersion(target);
 
         try {
-            String pushRequestId = PushUpgradesInterface.createPushRequest(targetVersionId, null);
-            PushUpgradesInterface.createPushJobs(pushRequestId, new List<String>{ key });
-            r.pushRequestId = pushRequestId;
-            r.success = true;
+            if (mockPushRequestId != null) {
+                r.pushRequestId = mockPushRequestId;
+                r.success = true;
+            } else {
+                String pushRequestId = PushUpgradesInterface.createPushRequest(targetVersionId, null);
+                PushUpgradesInterface.createPushJobs(pushRequestId, new List<String>{ key });
+                r.pushRequestId = pushRequestId;
+                r.success = true;
+            }
         } catch (Exception e) {
             r.errorMessage = e.getMessage();
         }
@@ -95,6 +107,9 @@ global with sharing class AgentPushUpgrade {
     }
 
     private static ObjectWrappers.PackageSubscriberWrapper findSubscriber(String orgKey) {
+        if (mockSubscribers != null) {
+            return mockSubscribers.isEmpty() ? null : mockSubscribers[0];
+        }
         ObjectWrappers.FilterWrapper fw = new ObjectWrappers.FilterWrapper();
         fw.fieldName = 'OrgKey';
         fw.value     = orgKey;
@@ -107,6 +122,12 @@ global with sharing class AgentPushUpgrade {
     }
 
     private static ObjectWrappers.PackageVersionWrapper findVersion(String subscriberPackageVersionId) {
+        if (mockVersions != null) {
+            for (ObjectWrappers.PackageVersionWrapper mv : mockVersions) {
+                if (mv.subscriberPackageVersionId == subscriberPackageVersionId) return mv;
+            }
+            return mockVersions.isEmpty() ? null : mockVersions[0];
+        }
         ObjectWrappers.FilterWrapper fw = new ObjectWrappers.FilterWrapper();
         fw.fieldName = 'SubscriberPackageVersionId';
         fw.value     = subscriberPackageVersionId;

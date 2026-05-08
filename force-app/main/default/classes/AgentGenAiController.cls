@@ -29,11 +29,20 @@ public with sharing class AgentGenAiController implements Callable {
             request.body = body;
             
             List<aiplatform.ModelsAPI_ChatMessageRequest> messagesList = new List<aiplatform.ModelsAPI_ChatMessageRequest>();
+
+            String systemPrompt = (String) args.get('systemPrompt');
+            if (String.isNotBlank(systemPrompt)) {
+                aiplatform.ModelsAPI_ChatMessageRequest systemMessage = new aiplatform.ModelsAPI_ChatMessageRequest();
+                systemMessage.content = systemPrompt;
+                systemMessage.role = 'system';
+                messagesList.add(systemMessage);
+            }
+
             aiplatform.ModelsAPI_ChatMessageRequest userMessageRequest = new aiplatform.ModelsAPI_ChatMessageRequest();
-            userMessageRequest.content = (String) args.get('userPrompt'); 
-            userMessageRequest.role = 'user'; 
-            messagesList.add(userMessageRequest); 
-            body.messages = messagesList; 
+            userMessageRequest.content = (String) args.get('userPrompt');
+            userMessageRequest.role = 'user';
+            messagesList.add(userMessageRequest);
+            body.messages = messagesList;
             request.body = body;
             
             String response = '';

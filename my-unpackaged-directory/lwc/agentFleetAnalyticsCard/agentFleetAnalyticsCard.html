@@ -1,0 +1,30 @@
+<template>
+    <lightning-card>
+        <h2 slot="title" class="slds-truncate">
+            <lightning-icon icon-name="standard:groups" class="slds-m-right_x-small"></lightning-icon>
+            Subscriber Fleet Analytics
+        </h2>
+        <div class="slds-card__body slds-card__body_inner slds-p-bottom_small">
+            <template lwc:if={hasError}>
+                <div class="slds-text-color_error slds-p-horizontal_small">{analytics.errorMessage}</div>
+            </template>
+            <template lwc:else>
+                <div class="slds-p-horizontal_small">
+                    <p class="slds-text-title_caps slds-text-color_weak">Breakdown by {analytics.groupedBy}</p>
+                    <p class="slds-text-body_small slds-text-color_weak slds-m-bottom_x-small">{analytics.segmentNote}</p>
+                    <template lwc:if={hasBuckets}>
+                        <ul class="slds-list_dotted">
+                            <template for:each={bucketRows} for:item="bucket">
+                                <li key={bucket.label} class="slds-item">{bucket.display}</li>
+                            </template>
+                        </ul>
+                    </template>
+                </div>
+                <div class="slds-p-horizontal_small slds-p-top_x-small slds-border_top slds-m-top_x-small">
+                    <p class="slds-text-title_caps slds-text-color_weak slds-p-top_x-small">Version Drift</p>
+                    <p class="slds-text-body_regular">{analytics.headline}</p>
+                </div>
+            </template>
+        </div>
+    </lightning-card>
+</template>

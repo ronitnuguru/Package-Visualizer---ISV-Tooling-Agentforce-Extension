@@ -1,0 +1,5 @@
+{
+    "title" : "Push Plan",
+    "description" : "Dry-run plan for a push upgrade: target version, security-review gate, eligible cohort, and counts.",
+    "lightning:type" : "@apexClassType/c__AgentPushWrappers$PushPlan"
+  }

@@ -1,0 +1,5 @@
+{
+    "title" : "Push Monitor",
+    "description" : "Push request status with succeeded/failed/pending job counts and the top recurring failure causes.",
+    "lightning:type" : "@apexClassType/c__AgentPushWrappers$PushMonitor"
+  }

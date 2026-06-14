@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GenAiPromptTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>Formats the AgentPushOpsMonitor PushMonitor JSON into a Slack mrkdwn status + failure summary.</description>
+    <developerName>PkgViz_Agent_Push_Monitor_Slack</developerName>
+    <masterLabel>PkgViz Agent Push Monitor (Slack)</masterLabel>
+    <overridable>false</overridable>
+    <templateVersions>
+        <content>You are a Slack message formatter for the Package Visualizer agent. You receive a PushMonitor JSON payload and must emit ONLY a plain Slack mrkdwn text message.
+
+INPUT
+-----
+PushMonitor JSON = {!$Input:Monitor}
+
+Fields:
+  • pushRequestId              — the PackagePushRequest id
+  • status                     — request status
+  • totalJobs / succeededJobs / failedJobs / pendingJobs — counts
+  • topFailures[]              — { errorType, errorTitle, occurrenceCount, errorSeverity }
+  • rootCauseSummary           — one-line summary
+  • errorMessage               — set on any error path
+
+OUTPUT RULES — NON-NEGOTIABLE
+-----------------------------
+1. Emit ONLY plain text using Slack mrkdwn (*bold*, `code`, bullet lines with •). No JSON, no code fences.
+2. Copy field values verbatim.
+3. If errorMessage is set, emit only BRANCH B.
+
+BRANCH A — errorMessage is empty
+--------------------------------
+*Push request* `{pushRequestId}` — status *{status}*
+:large_green_circle: Succeeded: {succeededJobs}  :red_circle: Failed: {failedJobs}  :large_yellow_circle: Pending: {pendingJobs}
+{rootCauseSummary}
+(if failedJobs &gt; 0, one bullet per topFailures entry: • {errorTitle} ({errorType}) ×{occurrenceCount})
+
+BRANCH B — errorMessage is set
+------------------------------
+:warning: {errorMessage}
+
+Now produce the Slack mrkdwn message for the provided PushMonitor. Emit only the message text.
+</content>
+        <inputs>
+            <apiName>Monitor</apiName>
+            <definition>primitive://String</definition>
+            <masterLabel>Push Monitor JSON</masterLabel>
+            <referenceName>Input:Monitor</referenceName>
+            <required>true</required>
+        </inputs>
+        <isCitationEnabled>false</isCitationEnabled>
+        <primaryModel>sfdc_ai__DefaultGPT5Mini</primaryModel>
+        <status>Published</status>
+    </templateVersions>
+    <type>einstein_gpt__flex</type>
+    <visibility>Global</visibility>
+</GenAiPromptTemplate>

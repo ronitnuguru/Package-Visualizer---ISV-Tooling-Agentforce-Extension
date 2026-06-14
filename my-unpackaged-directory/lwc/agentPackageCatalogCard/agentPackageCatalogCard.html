@@ -1,0 +1,64 @@
+<template>
+    <lightning-card>
+        <h2 slot="title" class="slds-truncate">
+            <lightning-icon icon-name="standard:agent_astro" size="small" class="slds-m-right_x-small"></lightning-icon>
+            ISV Agent
+        </h2>
+        <div class="slds-card__body slds-card__body_inner slds-scrollable" style="max-height:520px">
+            <template lwc:if={hasError}>
+                <div class="slds-text-color_error slds-p-horizontal_small">{catalog.errorMessage}</div>
+            </template>
+            <template lwc:else>
+                <p class="slds-text-title_caps slds-text-color_weak slds-p-horizontal_small slds-p-bottom_x-small">{catalog.headline}</p>
+
+                <template lwc:if={hasPackages}>
+                    <ul class="slds-has-dividers_around-space">
+                        <template for:each={rows} for:item="pkg">
+                            <li key={pkg.key} class="slds-item slds-p-around_x-small">
+                                <div class="slds-grid slds-grid_align-spread">
+                                    <span class="slds-text-heading_small slds-truncate">{pkg.name}</span>
+                                    <lightning-badge label={pkg.containerOptions} variant={pkg.badgeVariant}></lightning-badge>
+                                </div>
+                                <p class="slds-text-body_small slds-text-color_weak">ns: {pkg.nsLabel} · {pkg.subscriberPackageId}</p>
+                                <template lwc:if={pkg.description}>
+                                    <p class="slds-text-body_small slds-truncate">{pkg.description}</p>
+                                </template>
+                            </li>
+                        </template>
+                    </ul>
+
+                    <!-- Next-step picker (suggestions; underlying actions not built this slice) -->
+                    <fieldset class="slds-form-element slds-m-top_small slds-p-horizontal_small" role="radiogroup">
+                        <legend class="slds-form-element__legend slds-form-element__label">What would you like to do next?</legend>
+                        <div class="slds-form-element__control">
+                            <template for:each={nextSteps} for:item="opt">
+                                <div key={opt.value} class="slds-visual-picker slds-visual-picker_vertical">
+                                    <input type="radio" id={opt.value} name="pkgviz-next-step"
+                                           value={opt.value} checked={opt.selected} onchange={handleSelect} />
+                                    <label for={opt.value}>
+                                        <span class="slds-visual-picker__figure slds-visual-picker__text slds-align_absolute-center">
+                                            <span>
+                                                <span class="slds-text-heading_small slds-m-bottom_xx-small">{opt.label}</span>
+                                                <span class="slds-text-title">{opt.description}</span>
+                                            </span>
+                                        </span>
+                                        <span class="slds-icon_container slds-visual-picker__text-check">
+                                            <lightning-icon icon-name="utility:check" size="x-small"></lightning-icon>
+                                        </span>
+                                    </label>
+                                </div>
+                            </template>
+                        </div>
+                        <div class="slds-m-top_x-small">
+                            <lightning-button label="Submit" variant="brand"
+                                               disabled={submitDisabled} onclick={handleSubmit}></lightning-button>
+                        </div>
+                        <template lwc:if={hint}>
+                            <p class="slds-m-top_x-small slds-text-body_small">{hint}</p>
+                        </template>
+                    </fieldset>
+                </template>
+            </template>
+        </div>
+    </lightning-card>
+</template>

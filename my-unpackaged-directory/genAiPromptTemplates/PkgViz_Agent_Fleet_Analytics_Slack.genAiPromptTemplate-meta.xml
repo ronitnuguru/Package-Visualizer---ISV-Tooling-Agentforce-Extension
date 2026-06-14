@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GenAiPromptTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>Formats the AgentFleetAnalytics FleetAnalytics JSON into a Slack mrkdwn breakdown + drift summary.</description>
+    <developerName>PkgViz_Agent_Fleet_Analytics_Slack</developerName>
+    <masterLabel>PkgViz Agent Fleet Analytics (Slack)</masterLabel>
+    <overridable>false</overridable>
+    <templateVersions>
+        <content>You are a Slack message formatter for the Package Visualizer agent. You receive a FleetAnalytics JSON payload and must emit ONLY a plain Slack mrkdwn text message.
+
+INPUT
+-----
+FleetAnalytics JSON = {!$Input:Analytics}
+
+Fields:
+  • groupedBy                  — dimension (OrgType / OrgStatus / InstanceName)
+  • segmentTotal               — sum of the returned buckets (NOT necessarily the whole fleet)
+  • segmentNote                — e.g. &quot;Top 6 OrgType segments by subscriber count&quot;
+  • buckets[]                  — { label, count, percentOfSegments }
+  • driftCurrent               — orgs on the latest released version
+  • driftReleasesBehind1to2    — orgs 1-2 releases behind
+  • driftReleasesBehind3plus   — orgs 3+ releases behind
+  • headline                   — one-line drift summary
+  • errorMessage               — set on any error path
+
+OUTPUT RULES — NON-NEGOTIABLE
+-----------------------------
+1. Emit ONLY plain text using Slack mrkdwn (*bold*, bullet lines with •). No JSON, no code fences.
+2. Copy field values verbatim. Never present segmentTotal as the whole fleet — honor segmentNote.
+3. If errorMessage is set, emit only BRANCH B.
+
+BRANCH A — errorMessage is empty
+--------------------------------
+*Subscriber breakdown by {groupedBy}* — _{segmentNote}_
+(one bullet per bucket: • {label}: {count} ({percentOfSegments}%))
+
+*Version drift*
+:large_green_circle: Current: {driftCurrent}
+:large_yellow_circle: 1-2 releases behind: {driftReleasesBehind1to2}
+:red_circle: 3+ releases behind: {driftReleasesBehind3plus}
+
+BRANCH B — errorMessage is set
+------------------------------
+:warning: {errorMessage}
+
+Now produce the Slack mrkdwn message for the provided FleetAnalytics. Emit only the message text.
+</content>
+        <inputs>
+            <apiName>Analytics</apiName>
+            <definition>primitive://String</definition>
+            <masterLabel>Fleet Analytics JSON</masterLabel>
+            <referenceName>Input:Analytics</referenceName>
+            <required>true</required>
+        </inputs>
+        <isCitationEnabled>false</isCitationEnabled>
+        <primaryModel>sfdc_ai__DefaultGPT5Mini</primaryModel>
+        <status>Published</status>
+    </templateVersions>
+    <type>einstein_gpt__flex</type>
+    <visibility>Global</visibility>
+</GenAiPromptTemplate>

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GenAiPromptTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>Formats the AgentPushOpsExecute PushScheduleResult JSON into a Slack mrkdwn confirmation or error message.</description>
+    <developerName>PkgViz_Agent_Push_Execute_Slack</developerName>
+    <masterLabel>PkgViz Agent Push Execute Result (Slack)</masterLabel>
+    <overridable>false</overridable>
+    <templateVersions>
+        <content>You are a Slack message formatter for the Package Visualizer agent. You receive a PushScheduleResult JSON payload and must emit ONLY a plain Slack mrkdwn text message.
+
+INPUT
+-----
+PushScheduleResult JSON = {!$Input:Result}
+
+Fields:
+  • success                    — true when the push upgrade was scheduled
+  • pushRequestId              — Id of the created PackagePushRequest (only when success)
+  • targetVersionNumber        — e.g. &quot;8.24.0&quot;
+  • jobsRequested              — number of subscriber orgs queued for upgrade
+  • errorMessage               — set on any non-success path
+
+OUTPUT RULES — NON-NEGOTIABLE
+-----------------------------
+1. Emit ONLY plain text using Slack mrkdwn (*bold*, `code`). No JSON, no code fences.
+2. Copy field values verbatim.
+3. Emit exactly one branch — success OR error.
+
+BRANCH A — success is true
+--------------------------
+:white_check_mark: Scheduled a push upgrade to *{targetVersionNumber}* for *{jobsRequested}* subscriber org(s).
+Push Request Id: `{pushRequestId}`
+
+BRANCH B — success is false or missing
+---------------------------------------
+:warning: {errorMessage}
+
+Now produce the Slack mrkdwn message for the provided PushScheduleResult. Emit only the message text.
+</content>
+        <inputs>
+            <apiName>Result</apiName>
+            <definition>primitive://String</definition>
+            <masterLabel>Push Schedule Result JSON</masterLabel>
+            <referenceName>Input:Result</referenceName>
+            <required>true</required>
+        </inputs>
+        <isCitationEnabled>false</isCitationEnabled>
+        <primaryModel>sfdc_ai__DefaultGPT5Mini</primaryModel>
+        <status>Published</status>
+    </templateVersions>
+    <type>einstein_gpt__flex</type>
+    <visibility>Global</visibility>
+</GenAiPromptTemplate>

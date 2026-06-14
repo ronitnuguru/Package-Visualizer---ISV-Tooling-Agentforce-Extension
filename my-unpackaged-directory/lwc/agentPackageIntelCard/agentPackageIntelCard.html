@@ -1,0 +1,48 @@
+<template>
+    <lightning-card>
+        <h2 slot="title" class="slds-truncate">
+            <lightning-icon icon-name="standard:product" class="slds-m-right_x-small"></lightning-icon>
+            Package Version Intelligence
+        </h2>
+        <div class="slds-card__body slds-card__body_inner slds-p-bottom_small">
+            <template lwc:if={hasError}>
+                <div class="slds-text-color_error slds-p-horizontal_small">{insight.errorMessage}</div>
+            </template>
+            <template lwc:else>
+                <dl class="slds-list_horizontal slds-wrap slds-p-horizontal_small">
+                    <dt class="slds-item_label slds-text-color_weak slds-truncate slds-size_1-of-2">Version</dt>
+                    <dd class="slds-item_detail slds-truncate slds-size_1-of-2">{insight.versionNumber}</dd>
+
+                    <dt class="slds-item_label slds-text-color_weak slds-truncate slds-size_1-of-2">Release State</dt>
+                    <dd class="slds-item_detail slds-truncate slds-size_1-of-2">{insight.releaseState}</dd>
+
+                    <dt class="slds-item_label slds-text-color_weak slds-truncate slds-size_1-of-2">Code Coverage</dt>
+                    <dd class="slds-item_detail slds-truncate slds-size_1-of-2">{insight.codeCoverageLabel}</dd>
+
+                    <dt class="slds-item_label slds-text-color_weak slds-truncate slds-size_1-of-2">Security Review</dt>
+                    <dd class="slds-item_detail slds-truncate slds-size_1-of-2">
+                        <lightning-badge label={insight.securityReviewLabel} variant={securityVariant}></lightning-badge>
+                    </dd>
+
+                    <dt class="slds-item_label slds-text-color_weak slds-truncate slds-size_1-of-2">Readiness</dt>
+                    <dd class="slds-item_detail slds-truncate slds-size_1-of-2">
+                        <lightning-badge label={insight.promotionReadinessTag} variant={readinessVariant}></lightning-badge>
+                    </dd>
+                </dl>
+
+                <template lwc:if={hasDependencies}>
+                    <div class="slds-p-horizontal_small slds-p-top_x-small">
+                        <p class="slds-text-title_caps slds-text-color_weak">Dependencies ({insight.dependencyCount})</p>
+                        <ul class="slds-list_dotted">
+                            <template for:each={insight.dependencies} for:item="dep">
+                                <li key={dep.subscriberPackageVersionId} class="slds-item">
+                                    {dep.packageName} {dep.versionNumber}
+                                </li>
+                            </template>
+                        </ul>
+                    </div>
+                </template>
+            </template>
+        </div>
+    </lightning-card>
+</template>

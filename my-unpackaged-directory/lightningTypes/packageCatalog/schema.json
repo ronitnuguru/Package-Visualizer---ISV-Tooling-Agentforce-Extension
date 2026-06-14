@@ -1,0 +1,5 @@
+{
+    "title" : "Package Catalog",
+    "description" : "A list of the org's 2GP packages with type, namespace, and subscriber package id.",
+    "lightning:type" : "@apexClassType/c__AgentPackageWrappers$PackageCatalog"
+  }

@@ -1,0 +1,5 @@
+{
+    "title" : "Fleet Analytics",
+    "description" : "Subscriber fleet breakdown by a chosen dimension plus a version-drift summary.",
+    "lightning:type" : "@apexClassType/c__AgentFleetWrappers$FleetAnalytics"
+  }

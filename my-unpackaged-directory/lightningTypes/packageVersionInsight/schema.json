@@ -1,0 +1,5 @@
+{
+    "title" : "Package Version Insight",
+    "description" : "Code coverage, security review, release state, dependencies, and promotion readiness for a 2GP package version.",
+    "lightning:type" : "@apexClassType/c__AgentPackageWrappers$PackageVersionInsight"
+  }

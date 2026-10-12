@@ -1,0 +1,18 @@
+{
+  "unevaluatedProperties" : false,
+  "properties" : {
+    "orgs" : {
+      "title" : "Org Response",
+      "description" : "List of orgs available for ISVs to spin up",
+      "maxItems" : 2000,
+      "items" : {
+        "lightning:type" : "@apexClassType/c__AgentCreateOrgs$OrgAgent"
+      },
+      "lightning:type" : "lightning__listType",
+      "lightning:isPII" : false,
+      "copilotAction:isDisplayable" : true,
+      "copilotAction:isUsedByPlanner" : true
+    }
+  },
+  "lightning:type" : "lightning__objectType"
+}

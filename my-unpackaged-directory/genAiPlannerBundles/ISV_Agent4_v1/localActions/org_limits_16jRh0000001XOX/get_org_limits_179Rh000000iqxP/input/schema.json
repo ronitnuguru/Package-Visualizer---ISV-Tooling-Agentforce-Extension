@@ -1,0 +1,14 @@
+{
+  "required" : [ "limitsRequest" ],
+  "unevaluatedProperties" : false,
+  "properties" : {
+    "limitsRequest" : {
+      "title" : "Limits Request",
+      "description" : "Request to get limits from the current Salesforce org",
+      "lightning:type" : "lightning__textType",
+      "lightning:isPII" : false,
+      "copilotAction:isUserInput" : false
+    }
+  },
+  "lightning:type" : "lightning__objectType"
+}

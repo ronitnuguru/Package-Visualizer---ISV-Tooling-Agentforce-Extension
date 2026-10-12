@@ -1,0 +1,14 @@
+{
+  "required" : [ ],
+  "unevaluatedProperties" : false,
+  "properties" : {
+    "selectedPushJobId" : {
+      "title" : "Selected Push Job Id",
+      "description" : "Stored authoritative active 0DX PackagePushJob ID. Apex derives its owning 0DV request.",
+      "lightning:type" : "lightning__textType",
+      "lightning:isPII" : false,
+      "copilotAction:isUserInput" : false
+    }
+  },
+  "lightning:type" : "lightning__objectType"
+}

@@ -1,0 +1,21 @@
+{
+  "required" : [ "userInput" ],
+  "unevaluatedProperties" : false,
+  "properties" : {
+    "currentPushJobId" : {
+      "title" : "Current Push Job Id",
+      "description" : "Persisted active 0DX, used only when no replacement ID was attempted.",
+      "lightning:type" : "lightning__textType",
+      "lightning:isPII" : false,
+      "copilotAction:isUserInput" : false
+    },
+    "userInput" : {
+      "title" : "User Input",
+      "description" : "Latest user utterance, which can contain a replacement 0DX.",
+      "lightning:type" : "lightning__textType",
+      "lightning:isPII" : false,
+      "copilotAction:isUserInput" : false
+    }
+  },
+  "lightning:type" : "lightning__objectType"
+}

@@ -1,0 +1,18 @@
+{
+  "unevaluatedProperties" : false,
+  "properties" : {
+    "result" : {
+      "title" : "Limits Response",
+      "description" : "List of limits from the current Salesforce org",
+      "maxItems" : 2000,
+      "items" : {
+        "lightning:type" : "@apexClassType/c__AgentLimitsController$AgentOrgLimit"
+      },
+      "lightning:type" : "lightning__listType",
+      "lightning:isPII" : false,
+      "copilotAction:isDisplayable" : true,
+      "copilotAction:isUsedByPlanner" : true
+    }
+  },
+  "lightning:type" : "lightning__objectType"
+}

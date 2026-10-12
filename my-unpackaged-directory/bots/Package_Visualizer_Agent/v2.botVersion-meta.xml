@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<BotVersion xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>v2</fullName>
+    <articleAnswersGPTEnabled>false</articleAnswersGPTEnabled>
+    <botDialogs>
+        <botSteps>
+            <botMessages>
+                <message>Hi, I&apos;m Package Visualizer Agent. Share a failed 0DX PackagePushJob ID, or ask what diagnostic tasks I support.</message>
+                <messageIdentifier>6b80cc53-4361-4e03-8a8a-ff722faf4a15</messageIdentifier>
+            </botMessages>
+            <stepIdentifier>339c9697-975d-4ac8-ac8e-b6b3d5c0db98</stepIdentifier>
+            <type>Message</type>
+        </botSteps>
+        <botSteps>
+            <stepIdentifier>3ce66b61-ec26-4efe-94f6-b1563072e3c0</stepIdentifier>
+            <type>Wait</type>
+        </botSteps>
+        <developerName>Welcome</developerName>
+        <isPlaceholderDialog>false</isPlaceholderDialog>
+        <label>Welcome</label>
+        <showInFooterMenu>false</showInFooterMenu>
+    </botDialogs>
+    <botDialogs>
+        <botSteps>
+            <botMessages>
+                <message>I couldn&apos;t complete that read-only diagnostic. Confirm your Package Visualizer push-upgrade access and try again.</message>
+                <messageIdentifier>bda8ae21-3576-44cc-aed2-33c4f5b9c981</messageIdentifier>
+            </botMessages>
+            <stepIdentifier>5a9e766e-e139-4873-8b3a-e5f70fae5b26</stepIdentifier>
+            <type>Message</type>
+        </botSteps>
+        <botSteps>
+            <stepIdentifier>6332e8d1-7c85-4227-b003-9f3ecf761129</stepIdentifier>
+            <type>Wait</type>
+        </botSteps>
+        <developerName>Rich_Content_Error_Handling</developerName>
+        <isPlaceholderDialog>false</isPlaceholderDialog>
+        <label>Error Handler</label>
+        <showInFooterMenu>false</showInFooterMenu>
+    </botDialogs>
+    <botDialogs>
+        <developerName>Transfer_To_Agent</developerName>
+        <isPlaceholderDialog>false</isPlaceholderDialog>
+        <label>Transfer To Agent</label>
+        <showInFooterMenu>false</showInFooterMenu>
+    </botDialogs>
+    <citationsEnabled>false</citationsEnabled>
+    <conversationDefinitionPlanners>
+        <genAiPlannerName>Package_Visualizer_Agent_v2</genAiPlannerName>
+    </conversationDefinitionPlanners>
+    <conversationSystemDialogs>
+        <dialog>Rich_Content_Error_Handling</dialog>
+        <type>ErrorHandling</type>
+    </conversationSystemDialogs>
+    <conversationVariables>
+        <dataType>Text</dataType>
+        <description>Latest push-job diagnostic state.</description>
+        <developerName>diagnostic_state</developerName>
+        <includeInPrompt>false</includeInPrompt>
+        <label>Diagnostic State</label>
+        <visibility>Internal</visibility>
+    </conversationVariables>
+    <conversationVariables>
+        <dataType>Text</dataType>
+        <description>Latest authoritative comparison JSON or safe state message.</description>
+        <developerName>comparison_json</developerName>
+        <includeInPrompt>false</includeInPrompt>
+        <label>Comparison Json</label>
+        <visibility>Internal</visibility>
+    </conversationVariables>
+    <conversationVariables>
+        <dataType>Text</dataType>
+        <description>Temporary authoritative target-version output from the latest diagnostic refresh.</description>
+        <developerName>refreshed_target_package_version_id</developerName>
+        <includeInPrompt>false</includeInPrompt>
+        <label>Refreshed Target Package Version Id</label>
+        <visibility>Internal</visibility>
+    </conversationVariables>
+    <conversationVariables>
+        <dataType>Text</dataType>
+        <description>Temporary authoritative request output from the latest diagnostic refresh.</description>
+        <developerName>refreshed_push_request_id</developerName>
+        <includeInPrompt>false</includeInPrompt>
+        <label>Refreshed Push Request Id</label>
+        <visibility>Internal</visibility>
+    </conversationVariables>
+    <conversationVariables>
+        <dataType>Text</dataType>
+        <description>The agent instructions</description>
+        <developerName>AgentScriptInternal_agent_instructions</developerName>
+        <includeInPrompt>false</includeInPrompt>
+        <label>Agent Instructions</label>
+        <visibility>Internal</visibility>
+    </conversationVariables>
+    <conversationVariables>
+        <dataType>Text</dataType>
+        <description>Authoritative active 0DX PackagePushJob ID.</description>
+        <developerName>active_push_job_id</developerName>
+        <includeInPrompt>false</includeInPrompt>
+        <label>Active Push Job Id</label>
+        <visibility>Internal</visibility>
+    </conversationVariables>
+    <conversationVariables>
+        <dataType>Text</dataType>
+        <description>Temporary diagnostic payload output from the latest refresh.</description>
+        <developerName>refreshed_diagnostic_json</developerName>
+        <includeInPrompt>false</includeInPrompt>
+        <label>Refreshed Diagnostic Json</label>
+        <visibility>Internal</visibility>
+    </conversationVariables>
+    <conversationVariables>
+        <dataType>Boolean</dataType>
+        <description>Whether the latest diagnostic refresh invalidated prior context.</description>
+        <developerName>clear_previous_context</developerName>
+        <includeInPrompt>false</includeInPrompt>
+        <label>Clear Previous Context</label>
+        <visibility>Internal</visibility>
+    </conversationVariables>
+    <conversationVariables>
+        <dataType>Text</dataType>
+        <description>Temporary comparison payload output from the latest comparison.</description>
+        <developerName>refreshed_comparison_json</developerName>
+        <includeInPrompt>false</includeInPrompt>
+        <label>Refreshed Comparison Json</label>
+        <visibility>Internal</visibility>
+    </conversationVariables>
+    <conversationVariables>
+        <dataType>Text</dataType>
+        <description>Authoritative owning 0DV PackagePushRequest ID.</description>
+        <developerName>active_push_request_id</developerName>
+        <includeInPrompt>false</includeInPrompt>
+        <label>Active Push Request Id</label>
+        <visibility>Internal</visibility>
+    </conversationVariables>
+    <conversationVariables>
+        <dataType>Text</dataType>
+        <description>Latest authoritative diagnostic JSON or safe state message.</description>
+        <developerName>diagnostic_json</developerName>
+        <includeInPrompt>false</includeInPrompt>
+        <label>Diagnostic Json</label>
+        <visibility>Internal</visibility>
+    </conversationVariables>
+    <conversationVariables>
+        <dataType>Text</dataType>
+        <description>Temporary authoritative request output from the latest comparison.</description>
+        <developerName>compared_push_request_id</developerName>
+        <includeInPrompt>false</includeInPrompt>
+        <label>Compared Push Request Id</label>
+        <visibility>Internal</visibility>
+    </conversationVariables>
+    <conversationVariables>
+        <dataType>Boolean</dataType>
+        <description>Runtime condition evaluation for if statements</description>
+        <developerName>AgentScriptInternal_condition_1</developerName>
+        <includeInPrompt>false</includeInPrompt>
+        <label>Runtime Condition 1</label>
+        <visibility>Internal</visibility>
+    </conversationVariables>
+    <conversationVariables>
+        <dataType>Text</dataType>
+        <description>The next topic to be visited</description>
+        <developerName>AgentScriptInternal_next_topic</developerName>
+        <includeInPrompt>false</includeInPrompt>
+        <label>Next Topic</label>
+        <visibility>Internal</visibility>
+    </conversationVariables>
+    <conversationVariables>
+        <dataType>Text</dataType>
+        <description>Authoritative target 04t package version ID.</description>
+        <developerName>target_package_version_id</developerName>
+        <includeInPrompt>false</includeInPrompt>
+        <label>Target Package Version Id</label>
+        <visibility>Internal</visibility>
+    </conversationVariables>
+    <conversationVariables>
+        <dataType>Text</dataType>
+        <description>Explicit meaning of a short affirmative follow-up, currently SIBLING_COMPARISON or blank.</description>
+        <developerName>pending_follow_up</developerName>
+        <includeInPrompt>false</includeInPrompt>
+        <label>Pending Follow Up</label>
+        <visibility>Internal</visibility>
+    </conversationVariables>
+    <conversationVariables>
+        <dataType>Text</dataType>
+        <description>Temporary authoritative job output from the latest diagnostic refresh.</description>
+        <developerName>refreshed_push_job_id</developerName>
+        <includeInPrompt>false</includeInPrompt>
+        <label>Refreshed Push Job Id</label>
+        <visibility>Internal</visibility>
+    </conversationVariables>
+    <conversationVariables>
+        <dataType>Text</dataType>
+        <description>Latest push-request comparison state.</description>
+        <developerName>comparison_state</developerName>
+        <includeInPrompt>false</includeInPrompt>
+        <label>Comparison State</label>
+        <visibility>Internal</visibility>
+    </conversationVariables>
+    <copilotPrimaryLanguage>en_US</copilotPrimaryLanguage>
+    <defaultStdObjForContactIdFltrEnabled>false</defaultStdObjForContactIdFltrEnabled>
+    <entryDialog>Welcome</entryDialog>
+    <intentDisambiguationEnabled>false</intentDisambiguationEnabled>
+    <intentV3Enabled>false</intentV3Enabled>
+    <isScriptCompatibleAgent>true</isScriptCompatibleAgent>
+    <knowledgeActionEnabled>false</knowledgeActionEnabled>
+    <knowledgeFallbackEnabled>false</knowledgeFallbackEnabled>
+    <smallTalkEnabled>false</smallTalkEnabled>
+    <staticPromptsEnabled>false</staticPromptsEnabled>
+    <stopRecPrompts>false</stopRecPrompts>
+    <stopWelcomePrompts>false</stopWelcomePrompts>
+    <surfacesEnabled>false</surfacesEnabled>
+    <toneType>Casual</toneType>
+</BotVersion>

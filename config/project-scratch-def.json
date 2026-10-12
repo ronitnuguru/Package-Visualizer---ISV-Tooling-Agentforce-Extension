@@ -4,13 +4,7 @@
   "hasSampleData": true,
   "features": [
     "EnableSetPasswordInApi",
-    "Einstein1AIPlatform",
-    "Chatbot",
-    "CustomerDataPlatform",
-    "CustomerDataPlatformLite",
-    "MarketingUser",
-    "DevelopmentWave",
-    "TableauEinstein"
+    "Einstein1AIPlatform"
   ],
   "settings": {
     "lightningExperienceSettings": {
@@ -23,12 +17,6 @@
     },
     "einsteinGptSettings": {
       "enableEinsteinGptPlatform": "true"
-    },
-    "botSettings": {
-      "enableBots": "true"
-    },
-    "customerDataPlatformSettings": {
-      "enableCustomerDataPlatform": "true"
     }
   }
 }

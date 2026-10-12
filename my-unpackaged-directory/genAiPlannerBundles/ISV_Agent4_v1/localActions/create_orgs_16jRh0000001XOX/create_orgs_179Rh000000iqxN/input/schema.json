@@ -1,0 +1,14 @@
+{
+  "required" : [ "orgRequest" ],
+  "unevaluatedProperties" : false,
+  "properties" : {
+    "orgRequest" : {
+      "title" : "Org Request",
+      "description" : "Type of org being requested",
+      "lightning:type" : "lightning__textType",
+      "lightning:isPII" : false,
+      "copilotAction:isUserInput" : false
+    }
+  },
+  "lightning:type" : "lightning__objectType"
+}

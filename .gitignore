@@ -48,6 +48,9 @@ $RECYCLE.BIN/
 .cursor/
 skills-lock.json
 
+# Local-only docs (do not push to GitHub)
+internal-docs/
+
 # Python Salesforce Functions
 **/__pycache__/
 **/.venv/

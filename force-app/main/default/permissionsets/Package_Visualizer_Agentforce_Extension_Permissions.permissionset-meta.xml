@@ -108,6 +108,71 @@
         <apexClass>DeepWikiMcpController</apexClass>
         <enabled>true</enabled>
     </classAccesses>
+    <classAccesses>
+        <apexClass>HeadlessCancelPushAction</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>HeadlessExecutePushAction</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>HeadlessPlanPushAction</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>HeadlessPushGateway</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>HeadlessPushPreparationService</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>HeadlessPushResponse</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>HeadlessPushService</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>HeadlessPushStageQueueable</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>HeadlessPushStatusAction</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>HeadlessResolvePushTargetAction</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>HeadlessPreviewPushAction</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>HeadlessFindPushRunsAction</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>HeadlessPushSelectionService</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>HeadlessPushRunService</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses><apexClass>HeadlessPushTargetLookup</apexClass><enabled>true</enabled></classAccesses>
+    <customPermissions>
+        <enabled>true</enabled>
+        <name>Package_Visualizer_Core</name>
+    </customPermissions>
+    <customPermissions>
+        <enabled>true</enabled>
+        <name>Package_Visualizer_Push_Upgrade</name>
+    </customPermissions>
     <hasActivationRequired>false</hasActivationRequired>
     <label>Package Visualizer Agentforce Extension Permissions</label>
 </PermissionSet>

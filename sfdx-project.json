@@ -8,12 +8,10 @@
       "path": "force-app",
       "default": true,
       "package": "Package Visualizer + ISV Tooling Agentforce Extension",
-      "unpackagedMetadata": {
-        "path": "my-unpackaged-directory"
-      },
       "dependencies": [
         {
-          "package": "04tRh000001bYbdIAE"
+          "package": "Package Visualizer",
+          "versionNumber": "9.42.0.LATEST"
         }
       ]
     }
@@ -23,6 +21,7 @@
   "sfdcLoginUrl": "https://login.salesforce.com",
   "sourceApiVersion": "68.0",
   "packageAliases": {
+    "Package Visualizer": "0Ho5w000000KyxwCAC",
     "Package Visualizer + ISV Tooling Agentforce Extension": "0HoRh0000000673KAA",
     "Package Visualizer + ISV Tooling Agentforce Extension@0.1.0-1": "04tRh000001LoIzIAK",
     "Package Visualizer + ISV Tooling Agentforce Extension@0.1.0-2": "04tRh000001MZD3IAO",
@@ -62,6 +61,7 @@
     "Package Visualizer + ISV Tooling Agentforce Extension@1.5.0-1": "04tRh000001bRS5IAM",
     "Package Visualizer + ISV Tooling Agentforce Extension@1.6.0-1": "04tRh000001bSSzIAM",
     "Package Visualizer + ISV Tooling Agentforce Extension@1.7.0-1": "04tRh000001bSUbIAM",
-    "Package Visualizer + ISV Tooling Agentforce Extension@1.8.0-1": "04tRh000001bYdFIAU"
+    "Package Visualizer + ISV Tooling Agentforce Extension@1.8.0-1": "04tRh000001bYdFIAU",
+    "Package Visualizer + ISV Tooling Agentforce Extension@1.9.0-1": "04tRh000001bjC5IAI"
   }
 }
